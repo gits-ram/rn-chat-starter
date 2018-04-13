@@ -1,0 +1,243 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login Screen renders correctly 1`] = `
+<View
+  style={
+    Object {
+      "flex": 1,
+      "height": 1334,
+    }
+  }
+  virtual={undefined}
+>
+  <View>
+    <View
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#F8F8F8",
+            "borderBottomColor": "#a7a6ab",
+            "borderBottomWidth": 0.5,
+            "elevation": 3,
+            "flexDirection": "row",
+            "height": 64,
+            "justifyContent": "center",
+            "left": 0,
+            "paddingLeft": 10,
+            "paddingRight": 10,
+            "paddingTop": 15,
+            "right": 0,
+            "shadowColor": undefined,
+            "shadowOffset": undefined,
+            "shadowOpacity": undefined,
+            "shadowRadius": undefined,
+            "top": 0,
+          },
+          Object {
+            "height": 210,
+          },
+        ]
+      }
+      virtual={undefined}
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "alignSelf": "center",
+              "flex": 1,
+            },
+            Object {
+              "alignItems": "center",
+            },
+          ]
+        }
+        virtual={undefined}
+      >
+        <View
+          collapsable={undefined}
+          style={Object {}}
+        >
+          <Image
+            collapsable={undefined}
+            source={1}
+            style={
+              Object {
+                "alignSelf": "center",
+                "height": 160,
+                "opacity": 0,
+                "resizeMode": "contain",
+                "transform": Array [
+                  Object {
+                    "translateY": -800,
+                  },
+                ],
+                "width": 340,
+              }
+            }
+          />
+        </View>
+        <Text
+          accessible={true}
+          allowFontScaling={true}
+          ellipsizeMode="tail"
+          numberOfLines={1}
+          style={
+            Object {
+              "color": "#000",
+              "fontFamily": "System",
+              "fontSize": 17,
+              "fontWeight": "600",
+              "textAlign": "center",
+            }
+          }
+          virtual={undefined}
+        >
+          ReactNativeBaseApp
+        </Text>
+        <View
+          style={Object {}}
+          virtual={undefined}
+        >
+          <Text
+            accessible={true}
+            allowFontScaling={true}
+            ellipsizeMode="tail"
+            style={
+              Array [
+                Object {
+                  "color": "#000",
+                  "fontFamily": "System",
+                  "fontSize": 16,
+                },
+                Object {
+                  "color": "#000",
+                },
+              ]
+            }
+            uppercase={false}
+            virtual={undefined}
+          >
+            Login - Header Area
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  <RCTScrollView
+    automaticallyAdjustContentInsets={false}
+    contentContainerStyle={undefined}
+    contentInset={
+      Object {
+        "bottom": 0,
+      }
+    }
+    enableAutoAutomaticScroll={true}
+    enableResetScrollToCoords={true}
+    extraHeight={75}
+    extraScrollHeight={0}
+    getScrollResponder={[Function]}
+    handleOnScroll={[Function]}
+    keyboardDismissMode="interactive"
+    keyboardOpeningTime={250}
+    keyboardShouldPersistTaps="handled"
+    keyboardSpace={0}
+    onScroll={[Function]}
+    resetKeyboardSpace={[Function]}
+    resetScrollToCoords={
+      Object {
+        "x": 0,
+        "y": 0,
+      }
+    }
+    scrollEventThrottle={1}
+    scrollForExtraHeightOnAndroid={[Function]}
+    scrollToEnd={[Function]}
+    scrollToFocusedInput={[Function]}
+    scrollToPosition={[Function]}
+    showsVerticalScrollIndicator={true}
+    style={
+      Object {
+        "backgroundColor": "transparent",
+        "flex": 1,
+      }
+    }
+    viewIsInsideTabBar={false}
+    virtual={undefined}
+  >
+    <View />
+  </RCTScrollView>
+  <View
+    style={
+      Array [
+        Object {
+          "backgroundColor": "#F8F8F8",
+          "borderColor": "#cbcbcb",
+          "borderTopWidth": 0.5,
+          "elevation": 3,
+          "flexDirection": "row",
+          "height": 55,
+          "justifyContent": "center",
+          "left": 0,
+          "paddingBottom": 0,
+          "right": 0,
+        },
+        Object {
+          "backgroundColor": "#F8F8F8",
+        },
+      ]
+    }
+    virtual={undefined}
+  >
+    <View
+      style={
+        Array [
+          Object {},
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "opacity": 0.5,
+          },
+        ]
+      }
+      virtual={undefined}
+    >
+      <View
+        padder={true}
+        style={
+          Object {
+            "paddingBottom": 10,
+            "paddingLeft": 10,
+            "paddingRight": 10,
+            "paddingTop": 10,
+          }
+        }
+        virtual={undefined}
+      >
+        <Text
+          accessible={true}
+          allowFontScaling={true}
+          ellipsizeMode="tail"
+          style={
+            Array [
+              Object {
+                "color": "#000",
+                "fontFamily": "System",
+                "fontSize": 16,
+              },
+              Object {
+                "color": "#000",
+              },
+            ]
+          }
+          uppercase={false}
+          virtual={undefined}
+        >
+          Login - Footer Area
+        </Text>
+      </View>
+    </View>
+  </View>
+</View>
+`;
