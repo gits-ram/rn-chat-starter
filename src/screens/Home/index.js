@@ -112,6 +112,11 @@ class Home extends React.Component<Props, State> {
                       screen: Constants.Screens.EXPANDABLESTICKYSECTIONLIST.screen,
                       title: Constants.Screens.EXPANDABLESTICKYSECTIONLIST.title,
                     });
+                  } else if (item === "Form UI Components") {
+                    this.props.navigator.push({
+                      screen: Constants.Screens.FORMUI.screen,
+                      title: Constants.Screens.FORMUI.title,
+                    });
                   }
                 }}>
                 <Text>{item}</Text>

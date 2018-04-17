@@ -156,6 +156,8 @@ export default class SwipeListContainer extends React.Component<Props, State> {
                 <TouchableOpacity
                   style={[styles.backLeftBtnLeft]}
                   onPress={() => {
+                    this.closeRow(rowMap, data.item.key);
+
                     this.props.navigator.showInAppNotification({
                       screen: Constants.Screens.NOTIFICATION.screen,
                       passProps: { text: "Marked Done!", color: "green" },
