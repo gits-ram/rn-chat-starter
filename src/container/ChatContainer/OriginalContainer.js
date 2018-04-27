@@ -1,7 +1,12 @@
 // @flow
 import * as React from "react";
 import { observer, inject } from "mobx-react/native";
+// import { observer } from "mobx-react";
+import { PermissionsAndroid, Platform, Text, View } from "react-native";
 import ChatPage from "../../screens/ChatPage";
+import { AudioRecorder, AudioUtils } from "react-native-audio";
+import Sound from "react-native-sound";
+import * as FileUtil from "../../utils/FileStorageUtil";
 
 export interface Props {
   navigator: any;
@@ -9,6 +14,8 @@ export interface Props {
 export interface State {}
 
 let chatStore: Object;
+let chatView: Object;
+var sound: Sound;
 
 const dummyImages = [
   "https://cnet1.cbsistatic.com/img/_QgPMW663-rUhx1Y3EWZ6n0RPG4=/936x527/2015/05/12/0bd24541-9769-4e4d-bf56-a5c4e60ad8bb/panasonic-fz1000-sample-photo-10.jpg",
@@ -17,43 +24,243 @@ const dummyImages = [
   "https://www.w3schools.com/w3images/lights.jpg",
   "http://spayce.me/wp-content/uploads/2018/02/hawaii-wallpaper-hd-1920x1080-nature-landscape-tropical-island-beach-palm-trees-white-sand-sea-summer-clouds.jpg",
   "https://static.motor.es/fotos-noticias/2017/09/min652x435/suzuki-swift-sport-2018-201739407_1.jpg",
-  "http://fujifilm.com.ph/Products/digital_cameras/x/fujifilm_x20/sample_images/img/index/ff_x20_008.JPG"
+  "http://fujifilm.com.ph/Products/digital_cameras/x/fujifilm_x20/sample_images/img/index/ff_x20_008.JPG",
 ];
 
-@inject("chatStore")
+@inject("chatStore", "chatViewStore")
 @observer
 export default class OriginalContainer extends React.Component<Props, State> {
   componentDidMount() {
     //Hide Tab Bar
     this.props.navigator.toggleTabs({
       to: "hidden", // required, 'hidden' = hide tab bar, 'shown' = show tab bar
-      animated: false // does the toggle have transition animation or does it happen immediately (optional)
+      animated: false, // does the toggle have transition animation or does it happen immediately (optional)
     });
 
-    chatStore = this.props.chatStore;
-
+    //Bind React-Native-Navigation eventNavigator
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+
+    //Init ChatStore Obj
+    chatStore = this.props.chatStore;
+    //Init ChatViewStore Obj
+    chatView = this.props.chatViewStore;
+
+    //Check Mic Record Permission for voice recording on Android
+    this._checkPermission().then(hasPermission => {
+      chatView.hasMicPermission = true;
+
+      if (!hasPermission) {
+        return;
+      }
+
+      // this.prepareRecordingPath(this.state.audioPath);
+
+      AudioRecorder.onProgress = data => {
+        chatView.updateRecordingTime(Math.floor(data.currentTime));
+      };
+
+      AudioRecorder.onFinished = data => {
+        // Android callback comes in the form of a promise instead.
+        if (Platform.OS === "ios") {
+          this._finishRecording(data.status === "OK", data.audioFileURL);
+        }
+      };
+    });
+
+    //Create a Pvt Folder to save all chat voice recordings
+    if (chatView.lastChatRecName === "1") {
+      FileUtil.deleteFilePath(
+        AudioUtils.DocumentDirectoryPath + "/ChatRecordings",
+        () => {
+          console.log("Chat recording dir purged!");
+        },
+        () => {
+          console.log("Chat recording dir NOT purged");
+        },
+      );
+    }
+    FileUtil.makeDir(
+      "ChatRecordings",
+      () => {
+        console.log("Chat recording dir created!");
+      },
+      () => {
+        console.log("Chat recording dir NOT created!");
+      },
+      true,
+    );
   }
 
+  componentWillReceiveProps(nextProps) {
+    // console.warn("OC:" + JSON.stringify(nextProps.chatStore));
+  }
+
+  componentWillUnmount() {
+    this._stopSound();
+  }
+
+  //React-Native-Navigation handler for drawer etc.,
   onNavigatorEvent = (event: {}) => {};
 
+  _checkPermission() {
+    if (Platform.OS !== "android") {
+      return Promise.resolve(true);
+    }
+
+    const rationale = {
+      title: "Microphone Permission",
+      message: "The app needs access to your microphone so you can talk to the bot.",
+    };
+
+    return PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, rationale).then(
+      result => {
+        console.log("Permission result:", result);
+        return result === true || result === PermissionsAndroid.RESULTS.GRANTED;
+      },
+    );
+  }
+
   //Handle User Chat Input
-  receiveUserIp(ipText, action) {
+  _receiveUserIp(ipText, action) {
     chatStore.createUserChat(ipText);
     chatStore.contactAiApi(ipText, action);
 
     // console.log(JSON.stringify(chatStore.chatList));
   }
 
+  _prepareRecordingPath(audioPath) {
+    // Prepare Audio Recorder Lib
+    AudioRecorder.prepareRecordingAtPath(audioPath, {
+      SampleRate: 22050,
+      Channels: 1,
+      AudioQuality: "Low",
+      AudioEncoding: "aac",
+      AudioEncodingBitRate: 32000,
+    });
+  }
+
+  async _startRecording() {
+    if (this.props.chatViewStore.voiceRecording) {
+      console.warn("Already recording!");
+      return;
+    }
+
+    if (!this.props.chatViewStore.hasMicPermission) {
+      console.warn("Can't record, no permission granted!");
+      return;
+    }
+
+    //Prepare Audio Recorder with an audioPath
+    let audioPath =
+      AudioUtils.DocumentDirectoryPath +
+      "/ChatRecordings/" +
+      this.props.chatViewStore.lastChatRecName +
+      ".aac";
+    this._prepareRecordingPath(audioPath);
+
+    this.props.chatViewStore.setVoiceRecording(true);
+
+    try {
+      const filePath = await AudioRecorder.startRecording();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  _finishRecording(didSucceed, filePath) {
+    let temp = parseInt(this.props.chatViewStore.lastChatRecName) + 1;
+    this.props.chatViewStore.lastChatRecName = "" + temp;
+    chatStore.createAudioChat(true, filePath);
+    console.log(
+      `Finished recording of duration ${
+        this.props.chatViewStore.recordingTime
+      } seconds at path: ${filePath}`,
+    );
+  }
+
+  async _stopRecording(cancelled) {
+    if (!this.props.chatViewStore.voiceRecording) {
+      console.warn("Can't stop, not recording!");
+      return;
+    }
+
+    this.props.chatViewStore.setVoiceRecording(false);
+    if (cancelled || this.props.chatViewStore.recordingTime < 1) {
+      await AudioRecorder.stopRecording();
+      return;
+    }
+
+    try {
+      const filePath = await AudioRecorder.stopRecording();
+
+      if (Platform.OS === "android") {
+        this._finishRecording(true, filePath);
+      }
+      return filePath;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  _chatAnimate(indx) {
+    chatStore.setAnimate(indx, false);
+  }
+
+  _playSound(ind, audioPath) {
+    this._stopSound();
+
+    this.props.chatStore.setAudioPlaying(ind, true);
+
+    sound = new Sound(audioPath, "", error => {
+      if (error) {
+        console.log("failed to load the sound", error);
+      }
+    });
+    // setTimeout(() => {
+    setTimeout(() => {
+      sound.play(success => {
+        if (success) {
+          this._stopSound();
+          console.log("successfully finished playing");
+        } else {
+          console.log("playback failed due to audio decoding errors");
+        }
+      });
+    }, 100);
+    // }, 100);
+  }
+  _stopSound() {
+    this.props.chatStore.stopAllPlaying();
+
+    if (sound) {
+      setTimeout(() => {
+        sound.stop(success => {
+          if (success) {
+            console.warn("successfully finished stopping");
+          } else {
+            console.warn("stop failed due to audio decoding errors");
+          }
+        });
+      }, 100);
+    }
+  }
+
   render() {
     const { chatStore } = this.props;
-    let chatList = chatStore.chatList.toJS();
+    let chatList = this.props.chatStore.chatList.toJS();
     return (
+      // <View style={{ flex: 1 }}>
       <ChatPage
         navigator={this.props.navigator}
         chatList={chatList}
-        sendPressed={this.receiveUserIp}
+        sendPressed={this._receiveUserIp}
+        chatAnimate={this._chatAnimate}
+        startRecording={this._startRecording.bind(this)}
+        stopRecording={this._stopRecording.bind(this)}
+        playSound={this._playSound.bind(this)}
+        stopSound={this._stopSound.bind(this)}
       />
+      // </View>
     );
   }
 }

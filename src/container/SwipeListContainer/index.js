@@ -1,7 +1,15 @@
 // @flow
 import * as React from "react";
 import { observer, inject } from "mobx-react/native";
-import { StyleSheet, Text, Image, TouchableOpacity, TouchableHighlight, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  TouchableHighlight,
+  View,
+  LayoutAnimation,
+} from "react-native";
 import { SwipeListView } from "../../components/swipelist";
 import { Spinner, Button, Item, Input, Icon } from "native-base";
 import { connectActionSheet } from "@expo/react-native-action-sheet";
@@ -118,6 +126,10 @@ export default class SwipeListContainer extends React.Component<Props, State> {
       this.closeRow(rowMap, rowKey);
     }, 2000);
   };
+
+  componentWillReact() {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+  }
 
   render() {
     const { peopleStore } = this.props;

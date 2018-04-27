@@ -31,8 +31,9 @@ export default class ImageBlob extends React.PureComponent {
 
   componentDidMount() {
     Animated.timing(this._animated, {
+      useNativeDriver: true,
       toValue: 1,
-      duration: ANIMATION_DURATION,
+      duration: this.props.animate ? ANIMATION_DURATION : 0,
     }).start();
   }
 
@@ -198,7 +199,6 @@ const styles = {
     width: "85%",
     backgroundColor: "#FFF",
     borderRadius: 10,
-    padding: 2,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -207,8 +207,9 @@ const styles = {
     width: "95%",
     paddingTop: 4,
     paddingBottom: 4,
-    paddingLeft: 4,
-    paddingRight: 4,
+    paddingLeft: 7,
+    paddingRight: 7,
+    marginTop: 5,
     backgroundColor: "#F5F5F5",
     borderRadius: 5,
     alignItems: "center",
@@ -217,7 +218,7 @@ const styles = {
   bodyContainer: {
     flex: 0,
     // flexWrap: "wrap",
-    width: "95%",
+    width: "100%",
     marginLeft: 0,
     marginRight: 0,
     padding: 0,
