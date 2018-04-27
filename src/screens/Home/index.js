@@ -117,6 +117,16 @@ class Home extends React.Component<Props, State> {
                       screen: Constants.Screens.FORMUI.screen,
                       title: Constants.Screens.FORMUI.title,
                     });
+                  } else if (item === "Audio Recorder/Player") {
+                    this.props.navigator.push({
+                      screen: Constants.Screens.AUDIORECORDER.screen,
+                      title: Constants.Screens.AUDIORECORDER.title,
+                    });
+                  } else if (item === "ScrollView With Custom Indicator") {
+                    this.props.navigator.push({
+                      screen: Constants.Screens.INDICATEDSCROLLVIEW.screen,
+                      title: Constants.Screens.INDICATEDSCROLLVIEW.title,
+                    });
                   }
                 }}>
                 <Text>{item}</Text>

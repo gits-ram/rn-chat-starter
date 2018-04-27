@@ -23,7 +23,7 @@ class OptionsBlob extends React.PureComponent<Props, State> {
   componentDidMount() {
     Animated.timing(this._animated, {
       toValue: 1,
-      duration: ANIMATION_DURATION,
+      duration: this.props.animate ? ANIMATION_DURATION : 0,
     }).start();
   }
 

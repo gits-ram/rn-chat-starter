@@ -7,7 +7,7 @@ import Constants from "../../global/constants";
 const sections = [
   {
     title: "Numbers",
-    data: ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"],
+    data: ["One", "Two", "3", "4", "5", "6", "seven", "eight", "nine", "ten", "Eleven", "Twelve"],
   },
   {
     title: "Colors",
@@ -24,11 +24,24 @@ const sections = [
       "indigo",
       "grey",
       "mauve",
+      "Cyan",
+      "Magenta",
+      "AquaBlue",
+      "Violet",
+      "LimeYellow",
     ],
   },
   {
     title: "Fruits",
-    data: ["apple", "orange", "grape", "papaya", "banana", "guava"],
+    data: ["apple", "orange", "grape", "papaya", "banana", "guava", "Mango", "Pineapple"],
+  },
+  {
+    title: "Veggies",
+    data: ["Carrot", "Beans", "Potato", "Turnip", "Raddish", "Coconut", "Tomato"],
+  },
+  {
+    title: "Animals",
+    data: ["Lion", "Tiger", "Bear", "Cow", "Bull", "Dog", "Cat", "Rhino", "Deer", "Hippo"],
   },
 ];
 

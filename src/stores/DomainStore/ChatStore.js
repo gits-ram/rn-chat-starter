@@ -24,15 +24,7 @@ export default class ChatStore {
     this.fetchingApi = true;
     //Insert Loading Indicator as a Chat Entity and Remove it once response is received
     setTimeout(() => {
-      this.createResponseChat(
-        false,
-        "txt",
-        "loading..",
-        null,
-        null,
-        null,
-        true
-      );
+      this.createResponseChat(false, "txt", "loading..", null, null, null, true);
       // this.createResponseChat("loader", "", null, null);
     }, 300);
 
@@ -74,7 +66,7 @@ export default class ChatStore {
                   options,
                   imageUrl,
                   "",
-                  showIcon
+                  showIcon,
                 );
               }, ind * 600);
             }
@@ -86,7 +78,7 @@ export default class ChatStore {
               response.options,
               response.imageUrl,
               "",
-              true //show Ai icon?
+              true, //show Ai icon?
             );
           }
         }
@@ -117,7 +109,33 @@ export default class ChatStore {
       url: "",
       subText: "dummy",
       options: null,
-      showIcon: true
+      showIcon: true,
+    };
+    // console.log("USR INDEX:" + index);
+    let chat = new ChatModel(obj, index);
+
+    this.insertChatData(chat);
+  }
+
+  createAudioChat(isUser, path) {
+    let index = 0;
+    if (this.chatList.length > 0) {
+      index = this.chatList.length;
+    }
+
+    let obj = {
+      isUser: isUser,
+      type: "audio",
+      position: "right",
+      title: "",
+      text: "",
+      imgUrl: "",
+      url: "",
+      subText: "dummy",
+      options: null,
+      showIcon: true,
+      isPlaying: false,
+      audioPath: path,
     };
     // console.log("USR INDEX:" + index);
     let chat = new ChatModel(obj, index);
@@ -126,15 +144,7 @@ export default class ChatStore {
   }
 
   //Currently stubbed to give dummy responses
-  createResponseChat(
-    replaceFirstInd,
-    type,
-    ipTxt,
-    opts,
-    imageUrl,
-    URL,
-    showIc
-  ) {
+  createResponseChat(replaceFirstInd, type, ipTxt, opts, imageUrl, URL, showIc) {
     let index = 0;
     if (replaceFirstInd) {
       index = this.chatList.length - 1;
@@ -155,7 +165,7 @@ export default class ChatStore {
       url: URL,
       subText: "dummy",
       options: opts,
-      showIcon: showIc
+      showIcon: showIc,
     };
     // console.log("AI INDEX:" + index);
     let chat = new ChatModel(obj, index);
@@ -181,5 +191,24 @@ export default class ChatStore {
   @action
   clearChat() {
     this.chatList = [];
+  }
+
+  @action
+  setAnimate(indx, state) {
+    this.chatList[indx].animate = state;
+  }
+
+  @action
+  setAudioPlaying(indx, state) {
+    this.chatList[indx].isPlaying = state;
+  }
+
+  @action
+  stopAllPlaying() {
+    for (let i = 0; i < this.chatList.length; i++) {
+      if (this.chatList[i].isPlaying) {
+        this.chatList[i].isPlaying = false;
+      }
+    }
   }
 }
