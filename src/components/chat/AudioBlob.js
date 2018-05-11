@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { Image, View, Dimensions, Animated, TouchableOpacity } from "react-native";
+import { Image, View, Dimensions, TouchableOpacity } from "react-native";
 import { Text, Card, CardItem, Body } from "native-base";
+import { View as AnimView } from "react-native-animatable";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Constants from "../../global/constants";
 
 var width = Dimensions.get("window").width;
-
-const ANIMATION_DURATION = 300;
 
 export interface Props {
   id: int;
@@ -22,16 +21,15 @@ export interface State {}
 export default class AudioBlob extends React.Component {
   constructor(props) {
     super(props);
-
-    this._animated = new Animated.Value(0);
   }
 
   componentDidMount() {
-    Animated.timing(this._animated, {
-      useNativeDriver: true,
-      toValue: 1,
-      duration: this.props.animate ? ANIMATION_DURATION : 0,
-    }).start();
+    //Animate AudioBlob Entrance
+    if (this._viewRef) {
+      if (this.props.animate === 1) {
+        this._viewRef.fadeInUp(150);
+      }
+    }
   }
 
   saveRef = ref => (this.containerNode = ref);
@@ -45,27 +43,13 @@ export default class AudioBlob extends React.Component {
   }
 
   render() {
-    const animStyle = [
-      styles.mainContainer,
-      { opacity: this._animated },
-      {
-        transform: [
-          {
-            translateX: this._animated.interpolate({
-              inputRange: [0, 1],
-              outputRange: [-400, 0],
-              extrapolate: "clamp",
-            }),
-          },
-          { scale: this._animated },
-        ],
-      },
-    ];
-
-    var imgUrl = this.props.image;
-
     return (
-      <Animated.View style={animStyle}>
+      <AnimView
+        useNativeDriver={true}
+        ref={ref => {
+          this._viewRef = ref;
+        }}
+        style={styles.mainContainer}>
         {/* Render AILogo To Left of Card */}
         {this.props.isUser ? this._renderIconOnLeft(this.props.showIcon) : null}
 
@@ -90,7 +74,7 @@ export default class AudioBlob extends React.Component {
             {/* </Body> */}
           </CardItem>
         </Card>
-      </Animated.View>
+      </AnimView>
     );
   }
 }

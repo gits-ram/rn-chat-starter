@@ -15,6 +15,7 @@ export default class ChatModel {
   @observable animate;
   @observable isPlaying;
   @observable audioPath;
+  @observable slides;
 
   constructor(obj, i) {
     this.id = i;
@@ -28,8 +29,9 @@ export default class ChatModel {
     this.subText = obj.subText;
     this.options = obj.options;
     this.showIcon = obj.showIcon;
-    this.animate = true;
+    this.animate = obj.animate; //1 - default Anim //2-different anim for chained responses
     this.isPlaying = obj.isPlaying;
     this.audioPath = obj.audioPath;
+    this.slides = obj.slides;
   }
 }

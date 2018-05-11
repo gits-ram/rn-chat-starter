@@ -10,6 +10,7 @@ export default class ChatViewStore {
   @observable micTouchX = 0;
   @observable micTouchY = 0;
   @observable lastChatRecName = "1";
+  @observable isKeyboardOpen = false;
 
   @action
   setVoiceRecording(state) {

@@ -1,19 +1,5 @@
 import * as React from "react";
-import { Image as AnimImage, View as AnimView } from "react-native-animatable";
-import {
-  Container,
-  Header,
-  Title,
-  Content,
-  Text,
-  Button,
-  Icon,
-  Left,
-  Body,
-  Right,
-  List,
-  ListItem,
-} from "native-base";
+import { Container, Content, Text, List, ListItem } from "native-base";
 import Constants from "../../global/constants";
 import styles from "./styles";
 
@@ -126,6 +112,11 @@ class Home extends React.Component<Props, State> {
                     this.props.navigator.push({
                       screen: Constants.Screens.INDICATEDSCROLLVIEW.screen,
                       title: Constants.Screens.INDICATEDSCROLLVIEW.title,
+                    });
+                  } else if (item === "Carousel-Details Page") {
+                    this.props.navigator.push({
+                      screen: Constants.Screens.CAROUSELDETAILS.screen,
+                      title: Constants.Screens.CAROUSELDETAILS.title,
                     });
                   }
                 }}>

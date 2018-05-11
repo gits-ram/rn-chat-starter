@@ -24,7 +24,7 @@ export default class ChatStore {
     this.fetchingApi = true;
     //Insert Loading Indicator as a Chat Entity and Remove it once response is received
     setTimeout(() => {
-      this.createResponseChat(false, "txt", "loading..", null, null, null, true);
+      this.createResponseChat(false, "txt", "loading..", null, null, null, true, 1);
       // this.createResponseChat("loader", "", null, null);
     }, 300);
 
@@ -50,12 +50,17 @@ export default class ChatStore {
               let type = response[ind].type;
               let text = response[ind].text;
               let options = response[ind].options;
+              let slides = response[ind].slides;
               let imageUrl = response[ind].imageUrl;
               let showIcon = false;
               let replaceFirstInd = false;
+              let animate = 1;
               if (ind === 0) {
                 showIcon = true;
                 replaceFirstInd = true;
+                animate = 1; //fadeInLeft
+              } else {
+                animate = 2; //fadeInDown
               }
 
               setTimeout(() => {
@@ -67,6 +72,8 @@ export default class ChatStore {
                   imageUrl,
                   "",
                   showIcon,
+                  animate,
+                  slides,
                 );
               }, ind * 600);
             }
@@ -79,6 +86,8 @@ export default class ChatStore {
               response.imageUrl,
               "",
               true, //show Ai icon?
+              1, //animate type
+              response.slides,
             );
           }
         }
@@ -93,10 +102,18 @@ export default class ChatStore {
       });
   }
 
-  createUserChat(text) {
+  createUserChat(replaceFirstInd, text, animateType) {
+    // let index = 0;
+    // if (this.chatList.length > 0) {
+    //   index = this.chatList.length;
+    // }
     let index = 0;
-    if (this.chatList.length > 0) {
-      index = this.chatList.length;
+    if (replaceFirstInd) {
+      index = this.chatList.length - 1;
+    } else {
+      if (this.chatList.length > 0) {
+        index = this.chatList.length;
+      }
     }
 
     let obj = {
@@ -110,14 +127,21 @@ export default class ChatStore {
       subText: "dummy",
       options: null,
       showIcon: true,
+      animate: animateType,
+      slides: null,
     };
     // console.log("USR INDEX:" + index);
     let chat = new ChatModel(obj, index);
 
-    this.insertChatData(chat);
+    // this.insertChatData(chat);
+    if (replaceFirstInd) {
+      this.chatList[0] = chat;
+    } else {
+      this.insertChatData(chat);
+    }
   }
 
-  createAudioChat(isUser, path) {
+  createAudioChat(isUser, path, animateType) {
     let index = 0;
     if (this.chatList.length > 0) {
       index = this.chatList.length;
@@ -136,6 +160,8 @@ export default class ChatStore {
       showIcon: true,
       isPlaying: false,
       audioPath: path,
+      animate: animateType,
+      slides: null,
     };
     // console.log("USR INDEX:" + index);
     let chat = new ChatModel(obj, index);
@@ -144,7 +170,7 @@ export default class ChatStore {
   }
 
   //Currently stubbed to give dummy responses
-  createResponseChat(replaceFirstInd, type, ipTxt, opts, imageUrl, URL, showIc) {
+  createResponseChat(replaceFirstInd, type, ipTxt, opts, imageUrl, URL, showIc, animType, slide) {
     let index = 0;
     if (replaceFirstInd) {
       index = this.chatList.length - 1;
@@ -166,6 +192,8 @@ export default class ChatStore {
       subText: "dummy",
       options: opts,
       showIcon: showIc,
+      animate: animType,
+      slides: slide,
     };
     // console.log("AI INDEX:" + index);
     let chat = new ChatModel(obj, index);

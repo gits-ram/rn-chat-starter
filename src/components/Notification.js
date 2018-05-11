@@ -7,7 +7,7 @@ class Notification extends React.Component {
       <View
         style={
           (styles.container,
-          this.props.color ? { backgroundColor: this.props.color } : { backgroundColor: "#0773f7" })
+          this.props.color ? { backgroundColor: this.props.color } : { backgroundColor: "#35373a" })
         }>
         <Text style={styles.title}>-=Notification=-</Text>
         <Text style={styles.content}>{this.props.text}</Text>
@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
     color: "white",
+    fontWeight: "bold",
   },
   content: {
     fontSize: 12,
