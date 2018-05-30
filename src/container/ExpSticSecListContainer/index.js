@@ -1,14 +1,16 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, SectionList, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, SectionList, TouchableOpacity, SafeAreaView } from "react-native";
 import { Collapsible } from "../../components/collapsible";
+import Icon from "react-native-vector-icons/FontAwesome";
+import Constants from "../../global/constants";
 
 const sections = [
   {
-    title: "numbers",
+    title: "Numbers",
     data: ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"],
   },
   {
-    title: "colors",
+    title: "Colors",
     data: [
       "yellow",
       "blue",
@@ -25,7 +27,7 @@ const sections = [
     ],
   },
   {
-    title: "fruits",
+    title: "Fruits",
     data: ["apple", "orange", "grape", "papaya", "banana", "guava"],
   },
 ];
@@ -41,6 +43,19 @@ export default class ExpSticSecListContainer extends Component {
     });
   };
 
+  _renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "85%",
+          backgroundColor: "#CED0CE",
+          marginLeft: "4%",
+        }}
+      />
+    );
+  };
+
   render() {
     return (
       <SafeAreaView>
@@ -50,14 +65,40 @@ export default class ExpSticSecListContainer extends Component {
           keyExtractor={a => a}
           renderSectionHeader={({ section }) => (
             <TouchableOpacity onPress={() => this.onPress(section)}>
-              <Text style={styles.header}>{section.title}</Text>
+              <View style={styles.header}>
+                <Text
+                  style={[
+                    styles.headerText,
+                    {
+                      color:
+                        this.state.activeSection === section.title
+                          ? Constants.Colors.primaryAccent
+                          : "grey",
+                    },
+                  ]}>
+                  {section.title}
+                </Text>
+                {this.state.activeSection === section.title ? (
+                  <Icon
+                    name={"arrow-circle-o-up"}
+                    color={Constants.Colors.primaryAccent}
+                    size={25}
+                  />
+                ) : (
+                  <Icon name={"arrow-circle-o-down"} color={"grey"} size={25} />
+                )}
+              </View>
             </TouchableOpacity>
           )}
           renderItem={({ item, section }) => (
             <Collapsible key={item} collapsed={section.title !== this.state.activeSection}>
-              <Text style={styles.item}>{item}</Text>
+              <View>
+                <Text style={styles.item}>{item}</Text>
+                {this._renderSeparator()}
+              </View>
             </Collapsible>
           )}
+          // ItemSeparatorComponent={this._renderSeparator}
         />
       </SafeAreaView>
     );
@@ -66,11 +107,21 @@ export default class ExpSticSecListContainer extends Component {
 
 const styles = StyleSheet.create({
   header: {
-    fontSize: 36,
-    backgroundColor: "pink",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: 5,
+    paddingRight: 20,
+    paddingTop: 3,
+    paddingBottom: 3,
+    backgroundColor: Constants.Colors.greyBackground,
+  },
+  headerText: {
+    fontSize: 24,
   },
   item: {
-    fontSize: 40,
+    fontSize: 16,
     backgroundColor: "#fff",
     paddingHorizontal: 15,
     paddingVertical: 8,

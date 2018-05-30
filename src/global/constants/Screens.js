@@ -54,6 +54,10 @@ export default {
     screen: "afls.sectionlist",
     title: "Expandable Sticky Section List",
   },
+  FORMUI: {
+    screen: "afls.formui",
+    title: "Form UI components",
+  },
 
   //// POPUP/REUSABLE COMPONENTS ////
   NOTIFICATION: {
