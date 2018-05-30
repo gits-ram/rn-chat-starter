@@ -17,4 +17,5 @@ export default {
   statusBarText: "#FFF",
   white: "#FFF",
   greyBackground,
+  links,
 };

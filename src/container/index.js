@@ -19,8 +19,10 @@ import InfinitePeopleList from "./InfiniteFlatlistContainer";
 import StickyLargeList from "./StickyLargeListContainer";
 import SwipeList from "./SwipeListContainer";
 import AutoComplete from "./AutoCompleteContainer";
-import StickySectionList from "./ExpSticSecListContainer";
 import FormUi from "./FormUiContainer";
+import StickySectionList from "./ExpSticSecListContainer";
+import AudioRecorder from "./AudioRecordContainer";
+import IndicatedScrollView from "../container/IndicatedScrollContainer";
 
 import CollapsibleScrollView from "../components/AnimatedHeaderScrollView";
 import CollapsibleFlatList from "../components/AnimatedHeaderFlatList";
@@ -86,6 +88,12 @@ export function registerScreens(store, provider) {
   );
   Navigation.registerComponent(Constants.Screens.FORMUI.screen, () =>
     wrapProvider(FormUi, store, false),
+  );
+  Navigation.registerComponent(Constants.Screens.AUDIORECORDER.screen, () =>
+    wrapProvider(AudioRecorder, store, false),
+  );
+  Navigation.registerComponent(Constants.Screens.INDICATEDSCROLLVIEW.screen, () =>
+    wrapProvider(IndicatedScrollView, store, false),
   );
 }
 

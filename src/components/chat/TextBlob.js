@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Animated, TouchableOpacity } from "react-native
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import LoaderIndicator from "./LoadingIndicator";
 
-const ANIMATION_DURATION = 300;
+const ANIMATION_DURATION = 350;
 const ROW_HEIGHT = 100;
 
 export interface Props {
@@ -24,8 +24,9 @@ class TextBlob extends React.PureComponent<Props, State> {
 
   componentDidMount() {
     Animated.timing(this._animated, {
+      useNativeDriver: true,
       toValue: 1,
-      duration: ANIMATION_DURATION,
+      duration: this.props.animate ? ANIMATION_DURATION : 0,
     }).start();
   }
 
@@ -147,7 +148,7 @@ class TextBlob extends React.PureComponent<Props, State> {
           {
             rotate: this._animated.interpolate({
               inputRange: [0, 1],
-              outputRange: ["180deg", "0deg"],
+              outputRange: ["90deg", "0deg"],
               extrapolate: "clamp",
             }),
           },

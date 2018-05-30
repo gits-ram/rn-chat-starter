@@ -1,5 +1,6 @@
 [
   "Infinite People Flatlist With Search",
+  "Sticky LargeList (Ext Lib)",
   "AutoComplete/TypeAhead",
   "ScrollView with Animated/Collapsible Header",
   "FlatList with Animated/Collapsible Header",
@@ -7,5 +8,5 @@
   "Form UI Components",
   "Expandable Sticky Section List",
   "Audio Recorder/Player",
-  "ScrollView With Custom Indicator"
+  "ScrollView With Customized Indicator"
 ]
