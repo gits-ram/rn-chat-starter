@@ -1,19 +1,24 @@
 import RNFS from "react-native-fs";
 //For More Info and Features, Ref: https://github.com/itinance/react-native-fs
 
-//Make A New Private Directory to Store Captured Images
-export function makeImageDir(successCb, failureCb) {
-  let dirPath = RNFS.ExternalDirectoryPath + "/AFLS";
+//Make A New  Directory to Store on the Private (or) External Directory
+export function makeDir(folderName, successCb, failureCb, isPrivate) {
+  let dirPath = "";
+  if (!isPrivate) {
+    dirPath = RNFS.ExternalDirectoryPath + "/" + folderName;
+  } else {
+    dirPath = RNFS.DocumentDirectoryPath + "/" + folderName;
+  }
 
   RNFS.exists(dirPath)
     .then(isExists => {
       if (!isExists) {
         RNFS.mkdir(dirPath)
           .then(() => {
-            console.log("Pvt Image Dir Created:" + dirPath);
+            console.log("External Dir Created:" + dirPath);
             RNFS.exists(dirPath).then(isExists => {
               if (isExists) {
-                // console.log("Pvt Image Directory Created!");
+                // console.log("Ext Directory Created!");
                 successCb();
               }
             });
@@ -70,10 +75,10 @@ export function moveFile(filePath, fileName, successCb, failureCb) {
     });
 }
 
-export function deleteFile(filePath, successCb, failureCb) {
+export function deleteFilePath(filePath, successCb, failureCb) {
   RNFS.unlink(filePath)
     .then(() => {
-      console.log("File Deleted!");
+      console.log("File Path Deleted!");
       successCb();
     })
     .catch(err => {

@@ -1,4 +1,6 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+const deviceHeight = Dimensions.get("window").height;
 
 const styles: any = StyleSheet.create({
   container: {
@@ -16,11 +18,16 @@ const styles: any = StyleSheet.create({
   InputBarView: {
     marginTop: 3,
     width: "100%",
-    flex: 0.1,
+    height: 45,
+    position: "absolute",
+    bottom: 0,
+    // flex: 0.1,
     flexDirection: "row",
     borderRadius: 3,
     backgroundColor: "#FFF",
     padding: 3,
+    justifyContent: "center",
+    // alignItems: "flex-start",
   },
   InputBar: {
     flexDirection: "row",
@@ -49,6 +56,16 @@ const styles: any = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 4,
     borderColor: "#fff",
+  },
+  listenText: {
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingTop: 3,
+    paddingBottom: 3,
+    borderRadius: 20,
+    backgroundColor: "#FF0000",
+    color: "#FFF",
+    fontSize: 20,
   },
 });
 export default styles;

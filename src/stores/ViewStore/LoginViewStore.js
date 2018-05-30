@@ -84,7 +84,7 @@ export default class LoginViewStore {
     setTimeout(() => {
       this.fetchingApi = false;
       successCb();
-    }, 1000);
+    }, 100);
 
     /*Api.loginUser(
       {

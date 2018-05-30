@@ -72,7 +72,7 @@ class Login extends React.Component<Props, State> {
         <Header style={{ height: 210 }}>
           <Body style={{ alignItems: "center" }}>
             {/* <Icon name="md-planet" style={{ fontSize: 104 }} /> */}
-            <AnimView>
+            <AnimView useNativeDriver={true}>
               <AnimImage
                 source={require("../../../assets/img/clientlogo.png")}
                 style={styles.welcomeImage}

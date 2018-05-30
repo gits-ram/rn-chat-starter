@@ -50,13 +50,21 @@ export default {
     screen: "afls.collapselist",
     title: "Collapsible Header FlatList",
   },
+  FORMUI: {
+    screen: "afls.formui",
+    title: "Form UI components",
+  },
   EXPANDABLESTICKYSECTIONLIST: {
     screen: "afls.sectionlist",
     title: "Expandable Sticky Section List",
   },
-  FORMUI: {
-    screen: "afls.formui",
-    title: "Form UI components",
+  AUDIORECORDER: {
+    screen: "afls.audiorec",
+    title: "Audio Recorder",
+  },
+  INDICATEDSCROLLVIEW: {
+    screen: "afls.indicatescroll",
+    title: "ScrollView w/Custom Indicator",
   },
 
   //// POPUP/REUSABLE COMPONENTS ////
