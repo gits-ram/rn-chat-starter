@@ -20,6 +20,7 @@ import StickyLargeList from "./StickyLargeListContainer";
 import SwipeList from "./SwipeListContainer";
 import AutoComplete from "./AutoCompleteContainer";
 import StickySectionList from "./ExpSticSecListContainer";
+import FormUi from "./FormUiContainer";
 
 import CollapsibleScrollView from "../components/AnimatedHeaderScrollView";
 import CollapsibleFlatList from "../components/AnimatedHeaderFlatList";
@@ -82,6 +83,9 @@ export function registerScreens(store, provider) {
   );
   Navigation.registerComponent(Constants.Screens.EXPANDABLESTICKYSECTIONLIST.screen, () =>
     wrapProvider(StickySectionList, store, false),
+  );
+  Navigation.registerComponent(Constants.Screens.FORMUI.screen, () =>
+    wrapProvider(FormUi, store, false),
   );
 }
 
