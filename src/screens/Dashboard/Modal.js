@@ -41,7 +41,7 @@ class Modal extends Component {
   onResetTo = () => {
     this.props.navigator.resetTo({
       screen: "afls.modal",
-      icon: require("../../assets/img/navicon_menu.png"),
+      icon: require("../../../assets/img/navicon_menu.png"),
       title: "Modal",
     });
   };

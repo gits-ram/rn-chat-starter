@@ -98,13 +98,24 @@ class Login extends React.Component<Props, State> {
                 {showSpinner === true ? (
                   <Spinner color="#356CB1" />
                 ) : (
-                  <Button
-                    block
-                    onPress={() => {
-                      this.props.onLogin();
-                    }}>
-                    <Text>Login</Text>
-                  </Button>
+                  <View style={{ flex: 1 }}>
+                    <Button
+                      block
+                      onPress={() => {
+                        this.props.onLogin();
+                      }}>
+                      <Text style={{ fontWeight: "bold", fontSize: 18 }}>Login</Text>
+                    </Button>
+
+                    <Button
+                      block
+                      style={{ marginTop: 7 }}
+                      onPress={() => {
+                        this.props.onRegister();
+                      }}>
+                      <Text style={{ fontWeight: "bold", fontSize: 18 }}>Register</Text>
+                    </Button>
+                  </View>
                 )}
               </View>
             </FadeInView>

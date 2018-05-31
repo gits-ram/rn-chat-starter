@@ -7,13 +7,14 @@ import Drawer from "./Drawer";
 
 import NotificationBox from "../components/Notification";
 import LightBox from "../components/lightbox/LightBox";
-import Modal from "../components/Modal";
+import Camera from "../components/StillCamera";
 
 import Dash from "./DashboardContainer"; //Dashboard
 import Components from "./HomeContainer"; //Home Page
 import ChatDummyLanding from "./ChatContainer"; //Chat Dummy Landing Page
 import Chat from "./ChatContainer/OriginalContainer"; //Chat Dummy Landing Page
 import Login from "./LoginContainer";
+import Register from "../screens/Login/Register";
 
 import InfinitePeopleList from "./InfiniteFlatlistContainer";
 import StickyLargeList from "./StickyLargeListContainer";
@@ -24,9 +25,12 @@ import StickySectionList from "./ExpSticSecListContainer";
 import AudioRecorder from "./AudioRecordContainer";
 import IndicatedScrollView from "../container/IndicatedScrollContainer";
 import CarouselDetails from "../container/CarouselDetailContainer";
+import DamagedUldList from "../container/DamagedUldContainer";
 
 import CollapsibleScrollView from "../components/AnimatedHeaderScrollView";
 import CollapsibleFlatList from "../components/AnimatedHeaderFlatList";
+import Modal from "../screens/Dashboard/Modal";
+import JwtTestPage from "../screens/Dashboard/JwtTestPage";
 
 /** Register All Containers/Screens to
  * React-Native-Navigation Library
@@ -35,6 +39,9 @@ export function registerScreens(store, provider) {
   // console.log("STORES:" + JSON.stringify(store));
   Navigation.registerComponent(Constants.Screens.LOGIN.screen, () =>
     wrapProvider(Login, store, false),
+  );
+  Navigation.registerComponent(Constants.Screens.REGISTER.screen, () =>
+    wrapProvider(Register, store, false),
   );
 
   Navigation.registerComponent(Constants.Screens.DRAWER.screen, () =>
@@ -47,8 +54,8 @@ export function registerScreens(store, provider) {
   Navigation.registerComponent(Constants.Screens.LIGHTBOX.screen, () =>
     wrapProvider(LightBox, store, false),
   );
-  Navigation.registerComponent(Constants.Screens.MODAL.screen, () =>
-    wrapProvider(Modal, store, false),
+  Navigation.registerComponent(Constants.Screens.CAMERA.screen, () =>
+    wrapProvider(Camera, store, false, false),
   );
 
   Navigation.registerComponent(Constants.Screens.DASH.screen, () =>
@@ -63,6 +70,13 @@ export function registerScreens(store, provider) {
   );
   Navigation.registerComponent(Constants.Screens.CHAT.screen, () =>
     wrapProvider(Chat, store, false),
+  );
+
+  Navigation.registerComponent(Constants.Screens.MODAL.screen, () =>
+    wrapProvider(Modal, store, false),
+  );
+  Navigation.registerComponent(Constants.Screens.JWTTEST.screen, () =>
+    wrapProvider(JwtTestPage, store, false),
   );
 
   ////COMPONENT SCREENS////
@@ -98,6 +112,9 @@ export function registerScreens(store, provider) {
   );
   Navigation.registerComponent(Constants.Screens.CAROUSELDETAILS.screen, () =>
     wrapProvider(CarouselDetails, store, false),
+  );
+  Navigation.registerComponent(Constants.Screens.DAMAGEDULDS.screen, () =>
+    wrapProvider(DamagedUldList, store, false),
   );
 }
 
