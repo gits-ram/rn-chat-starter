@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { Image, View, Dimensions, Animated, TouchableHighlight } from "react-native";
+import { Image, View, Dimensions, TouchableHighlight } from "react-native";
 import { Text, Card, CardItem, Thumbnail, Body, Left, Spinner } from "native-base";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { View as AnimView } from "react-native-animatable";
 
 var width = Dimensions.get("window").width;
 const messages = ["hello", "this is supposed to be a bit of a long line.", "bye"];
-
-const ANIMATION_DURATION = 300;
 
 export interface Props {
   title: String;
@@ -22,19 +21,20 @@ export default class ImageBlob extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this._animated = new Animated.Value(0);
-
     this.state = {
       imageLoading: true,
     };
   }
 
   componentDidMount() {
-    Animated.timing(this._animated, {
-      useNativeDriver: true,
-      toValue: 1,
-      duration: this.props.animate ? ANIMATION_DURATION : 0,
-    }).start();
+    //Animate Imageblob Entrance
+    if (this._viewRef) {
+      if (this.props.animate === 1) {
+        this._viewRef.fadeIn(500);
+      } else if (this.props.animate === 2) {
+        this._viewRef.fadeInDown(600);
+      }
+    }
   }
 
   //UNUSED
@@ -152,34 +152,23 @@ export default class ImageBlob extends React.PureComponent {
   }
 
   render() {
-    const aiAnimStyle = [
-      styles.mainContainer,
-      { opacity: this._animated },
-      {
-        transform: [
-          {
-            translateX: this._animated.interpolate({
-              inputRange: [0, 1],
-              outputRange: [-400, 0],
-              extrapolate: "clamp",
-            }),
-          },
-          { scale: this._animated },
-        ],
-      },
-    ];
-
     var imgUrl = this.props.image;
 
     return (
-      <Animated.View style={aiAnimStyle} onLayout={this.onLayout}>
+      <AnimView
+        useNativeDriver={true}
+        ref={ref => {
+          this._viewRef = ref;
+        }}
+        style={styles.mainContainer}
+        onLayout={this.onLayout}>
         {/* Render UserLogo To Left of Card */}
         {this._renderIconOnLeft(this.props.showIcon)}
 
         {(this.props.text && this.props.text.length) > 0
           ? this._renderImageCardWithComments(imgUrl)
           : this._renderImageOnly(imgUrl)}
-      </Animated.View>
+      </AnimView>
     );
   }
 }

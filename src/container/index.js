@@ -23,6 +23,7 @@ import FormUi from "./FormUiContainer";
 import StickySectionList from "./ExpSticSecListContainer";
 import AudioRecorder from "./AudioRecordContainer";
 import IndicatedScrollView from "../container/IndicatedScrollContainer";
+import CarouselDetails from "../container/CarouselDetailContainer";
 
 import CollapsibleScrollView from "../components/AnimatedHeaderScrollView";
 import CollapsibleFlatList from "../components/AnimatedHeaderFlatList";
@@ -94,6 +95,9 @@ export function registerScreens(store, provider) {
   );
   Navigation.registerComponent(Constants.Screens.INDICATEDSCROLLVIEW.screen, () =>
     wrapProvider(IndicatedScrollView, store, false),
+  );
+  Navigation.registerComponent(Constants.Screens.CAROUSELDETAILS.screen, () =>
+    wrapProvider(CarouselDetails, store, false),
   );
 }
 

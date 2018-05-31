@@ -63,8 +63,12 @@ export default {
     title: "Audio Recorder",
   },
   INDICATEDSCROLLVIEW: {
-    screen: "afls.indicatescroll",
+    screen: "afls.indicatedscroll",
     title: "ScrollView w/Custom Indicator",
+  },
+  CAROUSELDETAILS: {
+    screen: "afls.carouseldetail",
+    title: "Carousel w/ Details",
   },
 
   //// POPUP/REUSABLE COMPONENTS ////

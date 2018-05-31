@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated, Text } from "react-native";
+import { Animated, View } from "react-native";
 import Spinner from "react-native-spinkit";
 
 const ANIMATION_DURATION = 200;
@@ -14,10 +14,12 @@ export default class LoadingIndicator extends React.PureComponent {
   }
 
   componentDidMount() {
-    Animated.timing(this._animated, {
-      toValue: 1,
-      duration: ANIMATION_DURATION,
-    }).start();
+    /* Animation commented, to let global LayoutAnimation take over for flatlist changes */
+    // Animated.timing(this._animated, {
+    //   useNativeDriver: true,
+    //   toValue: 1,
+    //   duration: this.props.animate ? ANIMATION_DURATION : 0,
+    // }).start();
   }
 
   render() {
@@ -30,14 +32,16 @@ export default class LoadingIndicator extends React.PureComponent {
     ];
 
     return (
-      <Animated.View style={loaderAnimStyle}>
+      // <Animated.View style={loaderAnimStyle}>
+      <View style={styles.mainContainer}>
         <Spinner
           isVisible={true}
           size={50}
           type={this.loaderStyle[this.currentStyle]}
           color={"#333333"}
         />
-      </Animated.View>
+      </View>
+      // </Animated.View>
     );
   }
 }

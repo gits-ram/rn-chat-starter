@@ -2,8 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, Animated, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import LoaderIndicator from "./LoadingIndicator";
+import { View as AnimView, Text as AnimText } from "react-native-animatable";
 
-const ANIMATION_DURATION = 350;
 const ROW_HEIGHT = 100;
 
 export interface Props {
@@ -18,38 +18,49 @@ export interface State {}
 class TextBlob extends React.PureComponent<Props, State> {
   constructor(props) {
     super(props);
-
-    this._animated = new Animated.Value(0);
   }
 
   componentDidMount() {
-    Animated.timing(this._animated, {
-      useNativeDriver: true,
-      toValue: 1,
-      duration: this.props.animate ? ANIMATION_DURATION : 0,
-    }).start();
+    //Animate AI Text Input Entrance
+    if (this._aiViewRef) {
+      if (this.props.animate === 1) {
+        this._aiViewRef.fadeInLeft(400);
+      } else if (this.props.animate === 2) {
+        this._aiViewRef.fadeInDown(300);
+      }
+    }
+
+    //Animate User Text Input Entrance
+    if (this._userViewRef) {
+      if (this.props.animate === 1) {
+        this._userViewRef.fadeInUp(150);
+      } else if (this.props.animate === 2) {
+        this._userViewRef.fadeInRight(150);
+      }
+    }
   }
 
-  onRemove = () => {
-    const { onRemove } = this.props;
-    if (onRemove) {
-      Animated.timing(this._animated, {
-        toValue: 0,
-        duration: ANIMATION_DURATION,
-      }).start(() => onRemove());
+  componentWillReceiveProps(nextProps) {
+    if (this._textViewRef && this.props.text !== nextProps.text) {
+      this._textViewRef.fadeIn(400);
     }
-  };
+  }
 
   _renderUserChat(rowStyles, title, text) {
     return (
-      <Animated.View style={rowStyles}>
+      <AnimView
+        useNativeDriver={true}
+        ref={ref => {
+          this._userViewRef = ref;
+        }}
+        style={rowStyles}>
         <View style={styles.userTextView}>
           <Text style={styles.userText}>{text}</Text>
         </View>
         {/* <View style={styles.userIconView}>
           <Icon name={"account"} color={"#333333"} size={42} />
         </View> */}
-      </Animated.View>
+      </AnimView>
     );
   }
 
@@ -61,28 +72,31 @@ class TextBlob extends React.PureComponent<Props, State> {
     const { options, chatAction, showIcon } = this.props;
 
     return (
-      <Animated.View style={rowStyles}>
+      <AnimView
+        useNativeDriver={true}
+        ref={ref => {
+          this._aiViewRef = ref;
+        }}
+        style={rowStyles}>
         <View style={styles.aiIconView}>
           {showIcon === true ? <Icon name={"robot"} color={"#000"} size={42} /> : null}
         </View>
-        {text === "loading.." ? (
-          <LoaderIndicator />
-        ) : (
-          <View
-            style={options && options.length > 0 ? styles.aiTextViewWithOpt : styles.aiTextView}>
-            <Text style={options && options.length > 0 ? styles.aiTextWithOpt : styles.aiText}>
-              {text}
-            </Text>
 
-            {/* <View
-              style={{ alignSelf: "center", width: "80%", height: 1, backgroundColor: "grey" }}
-            /> */}
-            {this.props.options && this.props.options.length > 0
-              ? this._renderOptions(options, chatAction)
-              : null}
-          </View>
-        )}
-      </Animated.View>
+        <AnimView
+          style={options && options.length > 0 ? styles.aiTextViewWithOpt : styles.aiTextView}
+          ref={ref => {
+            this._textViewRef = ref;
+          }}
+          useNativeDriver={true}>
+          {text === "loading.." ? (
+            <LoaderIndicator />
+          ) : this.props.options && this.props.options.length > 0 ? (
+            this._renderTextAndOptions(text, options, chatAction)
+          ) : (
+            <Text style={styles.aiText}>{text}</Text>
+          )}
+        </AnimView>
+      </AnimView>
     );
   }
 
@@ -126,59 +140,25 @@ class TextBlob extends React.PureComponent<Props, State> {
     return uiOptions;
   }
 
-  _renderOptions(options, chatAction) {
-    return <View style={styles.optionsView}>{this._generateOptions(options, chatAction)}</View>;
+  _renderTextAndOptions(text, options, chatAction) {
+    return (
+      <View style={styles.optionsView}>
+        <Text style={[{ alignSelf: "flex-start" }, styles.aiText, { paddingRight: 10 }]}>
+          {text}
+        </Text>
+        {this._generateOptions(options, chatAction)}
+      </View>
+    );
   }
 
   render() {
     const { title, text, isUser } = this.props;
 
-    const userRowStyles = [
-      styles.userAnimRow,
-      // {
-      //   height: this._animated.interpolate({
-      //     inputRange: [0, 1],
-      //     outputRange: [0, ROW_HEIGHT],
-      //     extrapolate: "clamp",
-      //   }),
-      // },
-      { opacity: this._animated },
-      {
-        transform: [
-          {
-            rotate: this._animated.interpolate({
-              inputRange: [0, 1],
-              outputRange: ["90deg", "0deg"],
-              extrapolate: "clamp",
-            }),
-          },
-          { scale: this._animated },
-        ],
-      },
-    ];
-
-    const aiRowStyles = [
-      styles.aiAnimRow,
-      { opacity: this._animated },
-      {
-        transform: [
-          // { scale: this._animated },
-          {
-            translateX: this._animated.interpolate({
-              inputRange: [0, 1],
-              outputRange: [-350, 0],
-              extrapolate: "clamp",
-            }),
-          },
-        ],
-      },
-    ];
-
     return (
       <View onLayout={this.onLayout}>
         {isUser
-          ? this._renderUserChat(userRowStyles, title, text)
-          : this._renderAIChat(aiRowStyles, title, text)}
+          ? this._renderUserChat(styles.userAnimRow, title, text)
+          : this._renderAIChat(styles.aiAnimRow, title, text)}
       </View>
     );
   }
@@ -229,43 +209,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   aiTextView: {
-    flex: 0.8,
+    flex: 0.65, //0.8 if the box should stetch to far right end of screen
     alignSelf: "flex-end",
     alignItems: "flex-start",
-    marginRight: 40,
+    // marginRight: 40,
     borderRadius: 8,
   },
   aiTextViewWithOpt: {
-    flex: 0.8,
+    flex: 0.65, //0.8 if the box should stetch to far right end of screen
     alignSelf: "flex-end",
     alignItems: "flex-start",
-    marginRight: 40,
+    // marginRight: 40,
     backgroundColor: "#fff", //"#dbdbdb",
     borderRadius: 8,
     marginBottom: 10,
   },
-  aiTextWithOpt: {
-    backgroundColor: "#fff", //"#dbdbdb",
-    padding: 10,
-    fontSize: 16,
-    color: "#707070",
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
   aiText: {
     backgroundColor: "#fff", //"#dbdbdb",
-    borderRadius: 8,
     padding: 10,
     fontSize: 16,
+    borderRadius: 8,
     color: "#707070",
   },
   optionsView: {
     flexDirection: "column",
     flex: 0,
     width: "100%",
-    backgroundColor: "white",
-    borderBottomLeftRadius: 8,
-    borderBottomRightRadius: 8,
+    backgroundColor: "#fff",
+    borderRadius: 8,
     alignSelf: "flex-start",
     alignItems: "center",
   },
