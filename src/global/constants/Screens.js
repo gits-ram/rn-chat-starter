@@ -3,6 +3,10 @@ export default {
     screen: "afls.login",
     title: "Login",
   },
+  REGISTER: {
+    screen: "afls.register",
+    title: "Sign Up Form",
+  },
   DRAWER: {
     screen: "afls.Drawer",
   },
@@ -70,16 +74,28 @@ export default {
     screen: "afls.carouseldetail",
     title: "Carousel w/ Details",
   },
+  DAMAGEDULDS: {
+    screen: "afls.damagedulds",
+    title: "Damaged ULDs",
+  },
+  MODAL: {
+    screen: "afls.modal",
+    title: "Modal",
+  },
+  JWTTEST: {
+    screen: "afls.jwttest",
+    title: "Jwt Test Page",
+  },
 
-  //// POPUP/REUSABLE COMPONENTS ////
+  //// POPUP & REUSABLE COMPONENTS ////
   NOTIFICATION: {
     screen: "afls.notification",
   },
   LIGHTBOX: {
     screen: "afls.lightbox",
   },
-  MODAL: {
-    screen: "afls.modal",
-    title: "Modal",
+  CAMERA: {
+    screen: "afls.camera",
+    title: "Camera",
   },
 };

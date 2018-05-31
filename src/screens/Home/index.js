@@ -118,6 +118,11 @@ class Home extends React.Component<Props, State> {
                       screen: Constants.Screens.CAROUSELDETAILS.screen,
                       title: Constants.Screens.CAROUSELDETAILS.title,
                     });
+                  } else if (item === "Damaged ULDs List") {
+                    this.props.navigator.push({
+                      screen: Constants.Screens.DAMAGEDULDS.screen,
+                      title: Constants.Screens.DAMAGEDULDS.title,
+                    });
                   }
                 }}>
                 <Text>{item}</Text>

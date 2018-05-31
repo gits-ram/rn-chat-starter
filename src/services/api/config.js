@@ -10,9 +10,13 @@
 
 //QA URLs
 module.exports = {
-  domainUrl: "http://10.0.2.2:3000",
-  loginUrl: "/api/signin",
-  registerUrl: "/api/signup",
+  domainUrl: "http://10.0.2.2:11880",
+
+  registerUrl: "/api/auth/signup",
+  loginUrl: "/api/auth/login",
+  refreshTokenUrl: "/api/auth/refreshToken",
+  getAllUsersUrl: "/api/auth/getAllUsers",
+
   randomPplUrl: "https://randomuser.me/api/",
   swapiUrl: "https://swapi.co/api/people/?",
   chatApiUrl: "/dummy",

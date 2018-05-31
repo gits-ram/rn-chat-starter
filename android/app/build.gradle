@@ -95,8 +95,14 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "26.0.2"
+
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion  rootProject.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     aaptOptions.cruncherEnabled = false
     aaptOptions.useNewCruncher = false
@@ -104,12 +110,13 @@ android {
     defaultConfig {
         applicationId "com.reactnativebaseapp"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
         versionName "1.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -154,16 +161,31 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: "libs", include: ["*.jar"])
-    compile "com.android.support:appcompat-v7:25.3.1"
-    compile "com.facebook.react:react-native:+"  // From node_modules
-    compile project(':react-native-smart-splashscreen') //Lib for RN Native Splashscreen
-    compile project(':react-native-spinkit')  //Lib for RN Loading Indicator 
-    compile project(':react-native-vector-icons') //Lib for RN Icons
-    compile project(':react-native-navigation') // Lib for RN Native Navigation
-    compile project(':react-native-audio') //Lib for RN Audio Recording
-    compile project(':react-native-sound') //lib for RN Audio playback
-    compile project(':react-native-fs') //Lib for RN FileSystem
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.android.support:appcompat-v7:$rootProject.supportLibVersion"
+    implementation "com.android.support:design:$rootProject.supportLibVersion"
+    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation (project(':react-native-smart-splashscreen')) { //Lib for RN Native Splashscreen
+        exclude group: 'com.android.support', module: 'support-v7'
+    }
+    implementation project(':react-native-spinkit')  //Lib for RN Loading Indicator
+    implementation project(':react-native-vector-icons') //Lib for RN Icons
+    implementation (project(':react-native-navigation')) { // Lib for RN Native Navigation
+        exclude group: 'com.android.support', module: 'support-v7'
+        exclude group: 'com.android.support', module: 'design'
+    }
+    implementation (project(':react-native-audio')) { //Lib for RN Audio Recording
+        exclude group: 'com.android.support', module: 'support-v7'
+    }
+    implementation project(':react-native-sound') //lib for RN Audio playback
+    implementation project(':react-native-fs') //Lib for RN FileSystem
+    implementation (project(':react-native-camera')) { //RN Camera
+        exclude group: "com.android.support"
+    }
+    implementation "com.android.support:exifinterface:$rootProject.supportLibVersion"
+    implementation "com.android.support:support-annotations:$rootProject.supportLibVersion"
+    implementation "com.android.support:support-v4:$rootProject.supportLibVersion"
+    implementation 'com.android.support:multidex:1.0.1'
 }
 
 // Run this once to be able to run the application with BUCK
@@ -172,3 +194,4 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+rr
