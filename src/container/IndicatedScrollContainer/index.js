@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { View, Image, StyleSheet, SectionList, TouchableOpacity, SafeAreaView } from "react-native";
-import { Left, Body, Thumbnail, Button, Card, CardItem, Text } from "native-base";
+import { View, Image } from "react-native";
+import { Left, Body, Thumbnail, Card, CardItem, Text } from "native-base";
 import Constants from "../../global/constants";
 import IndicatedScrollView from "../../components/IndicatedScrollView";
 

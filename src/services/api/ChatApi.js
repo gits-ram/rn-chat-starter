@@ -36,7 +36,16 @@ export function postUserAction(params: any, source: any) {
   //   );
 
   //CREATING DELAYED PROMISES FOR SIMULATION AND STUBBED RESPONSES
-  let responseObject = "";
+  let responseObject = [
+    {
+      type: "txt",
+      text: "I am sorry.",
+    },
+    {
+      type: "txt",
+      text: "Try another command..",
+    },
+  ];
   if (params.text.toLowerCase() === "hello") {
     responseObject = [
       {
@@ -60,6 +69,25 @@ export function postUserAction(params: any, source: any) {
         imageUrl: dummyImages[Math.floor(Math.random() * 7)],
       },
     ];
+  } else if (params.text.toLowerCase() === "pics") {
+    responseObject = [
+      {
+        type: "img",
+        text: null,
+        imageUrl: dummyImages[Math.floor(Math.random() * 7)],
+      },
+      {
+        type: "img",
+        text: null,
+        imageUrl: dummyImages[Math.floor(Math.random() * 7)],
+      },
+    ];
+  } else if (params.text.toLowerCase() === "pic") {
+    responseObject = {
+      type: "img",
+      text: null,
+      imageUrl: dummyImages[Math.floor(Math.random() * 7)],
+    };
   } else if (params.text.toLowerCase() === "fly") {
     responseObject = {
       type: "txt",
@@ -111,6 +139,19 @@ export function postUserAction(params: any, source: any) {
         ],
       },
     ];
+  } else if (params.text.toLowerCase() === "opts") {
+    responseObject = {
+      type: "opts",
+      text: "",
+      options: [
+        { id: 0, title: "Apple", action: "" },
+        { id: 1, title: "Banana", action: "" },
+        { id: 2, title: "Orange", action: "details/fruit=Orange" },
+        { id: 3, title: "Grapes", action: "" },
+        { id: 4, title: "Mango", action: "" },
+        { id: 5, title: "Pineapple", action: "" },
+      ],
+    };
   } else if (params.action === "details/fruit=Orange") {
     responseObject = [
       {
@@ -123,6 +164,184 @@ export function postUserAction(params: any, source: any) {
         text: "Orange",
       },
     ];
+  } else if (params.text.toLowerCase() === "boeing") {
+    responseObject = [
+      {
+        type: "txt",
+        text: "Book Boeing flights from below",
+      },
+      {
+        type: "carousel",
+        slides: [
+          {
+            id: 0,
+            title: "Boeing 737",
+            subtitle: "First flight	 April 9, 1967",
+            illustration: require("../../../assets/img/flight/Boe737.jpg"),
+            options: [
+              { id: 0, title: "Book Flight Seat", action: "flight/booking" },
+              { id: 1, title: "Ship Cargo Via Carrier", action: "flight/cargobooking" },
+            ],
+          },
+          {
+            id: 1,
+            title: "Boeing 747",
+            subtitle: "First flight  February 9, 1969",
+            illustration: require("../../../assets/img/flight/Boe747.jpg"),
+            options: [
+              { id: 0, title: "Book Flight", action: "flight/booking" },
+              { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
+            ],
+          },
+          {
+            id: 2,
+            title: "Boeing 757",
+            subtitle: "First flight	 February 19, 1982",
+            illustration: require("../../../assets/img/flight/Boe757.jpg"),
+            options: [
+              { id: 0, title: "Book Flight Seats", action: "flight/booking" },
+              { id: 1, title: "Ship Cargo Via Carrier", action: "flight/cargobooking" },
+            ],
+          },
+          {
+            id: 3,
+            title: "Boeing 767",
+            subtitle: "First flight	 September 26, 1984",
+            illustration: require("../../../assets/img/flight/Boe767.jpg"),
+            options: [
+              { id: 0, title: "Book Flight", action: "flight/booking" },
+              { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
+            ],
+          },
+          {
+            id: 4,
+            title: "Boeing 777",
+            subtitle: "First flight	 June 12, 1994",
+            illustration: require("../../../assets/img/flight/Boe777.jpg"),
+            options: [
+              { id: 0, title: "Book Seats", action: "flight/booking" },
+              { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
+            ],
+          },
+          {
+            id: 5,
+            title: "Boeing 787",
+            subtitle: "First flight	 December 15, 2009",
+            illustration: require("../../../assets/img/flight/Boe787.jpg"),
+            options: [
+              { id: 0, title: "Book Flight Seats", action: "flight/booking" },
+              { id: 1, title: "Ship Cargo Via Carrier", action: "flight/cargobooking" },
+            ],
+          },
+        ],
+      },
+    ];
+  } else if (params.text.toLowerCase() === "carousel") {
+    responseObject = {
+      type: "carousel",
+      slides: [
+        {
+          id: 0,
+          title: "Boeing 737",
+          subtitle: "First flight	 April 9, 1967",
+          illustration: require("../../../assets/img/flight/Boe737.jpg"),
+          options: [
+            { id: 0, title: "Book Flight", action: "flight/booking" },
+            { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
+          ],
+        },
+        {
+          id: 1,
+          title: "Boeing 747",
+          subtitle: "First flight  February 9, 1969",
+          illustration: require("../../../assets/img/flight/Boe747.jpg"),
+          options: [
+            { id: 0, title: "Book Flight", action: "flight/booking" },
+            { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
+          ],
+        },
+        {
+          id: 2,
+          title: "Boeing 757",
+          subtitle: "First flight	 February 19, 1982",
+          illustration: require("../../../assets/img/flight/Boe757.jpg"),
+          options: [
+            { id: 0, title: "Book Flight", action: "flight/booking" },
+            { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
+          ],
+        },
+        {
+          title: "Boeing 767",
+          subtitle: "First flight	 September 26, 1984",
+          illustration: require("../../../assets/img/flight/Boe767.jpg"),
+          options: [
+            { id: 0, title: "Book Flight", action: "flight/booking" },
+            { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
+          ],
+        },
+        {
+          id: 3,
+          title: "Boeing 777",
+          subtitle: "First flight	 June 12, 1994",
+          illustration: require("../../../assets/img/flight/Boe777.jpg"),
+          options: [
+            { id: 0, title: "Book Seats", action: "flight/booking" },
+            { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
+          ],
+        },
+        {
+          id: 4,
+          title: "Boeing 787",
+          subtitle: "First flight	 December 15, 2009",
+          illustration: require("../../../assets/img/flight/Boe787.jpg"),
+          options: [
+            { id: 0, title: "Book Seats", action: "flight/booking" },
+            { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
+          ],
+        },
+      ],
+    };
+  } else if (params.action === "flight/booking") {
+    responseObject = [
+      {
+        type: "txt",
+        text: "Choose a destination",
+      },
+      {
+        type: "opts",
+        text: "",
+        options: [
+          { id: 0, title: "Delhi", action: "flight/booking=City" },
+          { id: 1, title: "Bombay", action: "flight/booking=City" },
+          { id: 2, title: "Calcutta", action: "flight/booking=City" },
+          { id: 3, title: "Madras", action: "flight/booking=City" },
+          { id: 4, title: "Bangalore", action: "flight/booking=City" },
+          { id: 5, title: "Cochin", action: "flight/booking=City" },
+        ],
+      },
+    ];
+  } else if (params.action === "flight/booking=City") {
+    responseObject = [
+      {
+        type: "txt",
+        text: "Choose a date",
+        options: [{ id: 0, title: "Open Date Picker", action: "phone/datepicker" }],
+      },
+    ];
+  } else if (params.action === "booking/flight=city?date") {
+    responseObject = [
+      {
+        type: "txt",
+        text: "Sorry! No flight seats available for the chosen date.",
+      },
+    ];
+  } else if (params.action === "user/voice") {
+    responseObject = [
+      {
+        type: "txt",
+        text: "Couldn't process the voice input.",
+      },
+    ];
   }
   let chatPromise = new Promise((resolve, reject) => {
     // We call resolve(...) when what we were doing asynchronously was successful, and reject(...) when it failed.
@@ -130,7 +349,7 @@ export function postUserAction(params: any, source: any) {
     // In reality, you will probably be using something like XHR or an HTML5 API.
     setTimeout(function() {
       resolve(responseObject); // Yay! Everything went well!
-    }, 2200);
+    }, 2000);
   });
 
   return chatPromise;

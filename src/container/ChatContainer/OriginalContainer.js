@@ -2,7 +2,7 @@
 import * as React from "react";
 import { observer, inject } from "mobx-react/native";
 // import { observer } from "mobx-react";
-import { PermissionsAndroid, Platform, Text, View } from "react-native";
+import { PermissionsAndroid, Platform, LayoutAnimation } from "react-native";
 import ChatPage from "../../screens/ChatPage";
 import { AudioRecorder, AudioUtils } from "react-native-audio";
 import Sound from "react-native-sound";
@@ -122,7 +122,12 @@ export default class OriginalContainer extends React.Component<Props, State> {
 
   //Handle User Chat Input
   _receiveUserIp(ipText, action) {
-    chatStore.createUserChat(ipText);
+    //If last chat type is opts, then replace when user chooses it
+    let replace =
+      this.props.chatStore.chatList &&
+      this.props.chatStore.chatList.length > 0 &&
+      this.props.chatStore.chatList[0].type === "opts";
+    chatStore.createUserChat(replace ? true : false, ipText, replace ? 2 : 1);
     chatStore.contactAiApi(ipText, action);
 
     // console.log(JSON.stringify(chatStore.chatList));
@@ -170,7 +175,10 @@ export default class OriginalContainer extends React.Component<Props, State> {
   _finishRecording(didSucceed, filePath) {
     let temp = parseInt(this.props.chatViewStore.lastChatRecName) + 1;
     this.props.chatViewStore.lastChatRecName = "" + temp;
-    chatStore.createAudioChat(true, filePath);
+
+    chatStore.createAudioChat(true, filePath, 1);
+    chatStore.contactAiApi("", "user/voice");
+
     console.log(
       `Finished recording of duration ${
         this.props.chatViewStore.recordingTime
@@ -253,8 +261,8 @@ export default class OriginalContainer extends React.Component<Props, State> {
       <ChatPage
         navigator={this.props.navigator}
         chatList={chatList}
-        sendPressed={this._receiveUserIp}
-        chatAnimate={this._chatAnimate}
+        sendPressed={this._receiveUserIp.bind(this)}
+        chatAnimate={this._chatAnimate.bind(this)}
         startRecording={this._startRecording.bind(this)}
         stopRecording={this._stopRecording.bind(this)}
         playSound={this._playSound.bind(this)}

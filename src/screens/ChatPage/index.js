@@ -1,39 +1,24 @@
 // @flow
-import styles from "./styles";
 import * as React from "react";
 import {
   View,
   Platform,
   UIManager,
-  FlatList,
   TouchableHighlight,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { Observer, inject, observer } from "mobx-react/native";
 import { View as AnimView, Text as AnimText } from "react-native-animatable";
-import {
-  Container,
-  Header,
-  Title,
-  Button,
-  Left,
-  Icon as Ico,
-  Right,
-  Body,
-  Text,
-  Item,
-  Input,
-} from "native-base";
+import { Icon as Ico, Text, Item, Input } from "native-base";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { AudioRecorder, AudioUtils } from "react-native-audio";
+import styles from "./styles";
+import ChatList from "./ChatList";
 import Constants from "../../global/constants";
-import ChatTextBlob from "../../components/chat/TextBlob";
-import ChatImageBlob from "../../components/chat/ImageBlob";
-import LoaderIndicator from "../../components/chat/LoadingIndicator";
-import OptionsBlob from "../../components/chat/OptionsBlob";
 import ImagePreviewer from "../../components/SingleImagePreviewer";
-import AudioBlob from "../../components/chat/AudioBlob";
+import { DatePickerDialog } from "../../components/datepickerdialog";
+import moment from "moment";
 
 export interface Props {
   navigator: any;
@@ -46,7 +31,10 @@ export interface Props {
   stopRecording: Function;
 }
 
-export interface State {}
+export interface State {
+  mixedHeights: [];
+  cumulativeMixedHeights: [];
+}
 
 let chatView: object;
 
@@ -70,19 +58,64 @@ class ChatPage extends React.Component<Props, State> {
 
   componentDidMount() {
     chatView = this.props.chatViewStore;
+
+    this.keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      this._keyboardDidShow.bind(this),
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      this._keyboardDidHide.bind(this),
+    );
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
   componentWillReceiveProps(nextProps) {
     // console.warn("CL:" + JSON.stringify(nextProps.chatList));
+    //Scroll To Begining(or end, since inverted) when new chat gets updated in chatlist
+    // if (nextProps.chatList.length > 2) {
+    //   this.listRef.scrollToIndex({ viewPosition: 0, index: 0 });
+    // }
+  }
+
+  _keyboardDidShow() {
+    this.props.chatViewStore.isKeyboardOpen = true;
+  }
+
+  _keyboardDidHide() {
+    this.props.chatViewStore.isKeyboardOpen = false;
   }
 
   _receiveChatAction(ipTxt, action) {
     if (action === "imgPreview") {
       chatView.imageToPreview = ipTxt;
+    } else if (action === "phone/datepicker") {
+      this.invokeDatePickerDialog();
     } else {
       this.props.sendPressed(ipTxt, action);
     }
   }
+
+  // invoke DatePickerDialog
+  invokeDatePickerDialog = () => {
+    let date = new Date();
+
+    //To open the dialog
+    this.dateDialog.open({
+      date: date,
+      maxDate: new Date(), //To restrict future date
+    });
+  };
+
+  // Call back for date Dialog picked event
+  onDatePicked = date => {
+    // console.warn(moment(date).format("DD-MMM-YYYY"));
+    this.props.sendPressed(moment(date).format("DD-MMM-YYYY"), "booking/flight=city?date");
+  };
 
   _sendChat() {
     if (chatView.inputString !== "") {
@@ -210,7 +243,7 @@ class ChatPage extends React.Component<Props, State> {
           ref={ref => {
             this._micRef = ref;
           }}>
-          {chatView.inputString.length === 0 ? (
+          {chatView.inputString.length === 0 && !chatView.isKeyboardOpen ? (
             <TouchableWithoutFeedback
               onPressIn={evt => {
                 chatView.micTouchX = Math.floor(evt.nativeEvent.locationX);
@@ -260,118 +293,14 @@ class ChatPage extends React.Component<Props, State> {
     );
   }
 
-  _renderChatItem(itm, indx) {
-    let item = itm;
-    let tempAnim = item.animate;
-
-    this.props.chatAnimate(indx, false);
-    // console.warn("RENDER ITEM:" + JSON.stringify(item));
-
-    switch (item.isUser) {
-      case true:
-        switch (item.type) {
-          case "txt":
-            return (
-              <ChatTextBlob
-                title={item.title}
-                text={item.text}
-                isUser={true}
-                chatAction={null}
-                animate={tempAnim}
-              />
-            );
-
-          case "audio":
-            return (
-              <AudioBlob
-                id={indx}
-                isUser={true}
-                isPlaying={item.isPlaying}
-                audioPath={item.audioPath}
-                playSound={this._playSound.bind(this)}
-                stopSound={this._stopSound.bind(this)}
-              />
-            );
-        }
-        break;
-
-      case false:
-        switch (item.type) {
-          case "txt":
-            return (
-              <ChatTextBlob
-                title={item.title}
-                text={item.text}
-                isUser={false}
-                options={item.options}
-                chatAction={this._receiveChatAction.bind(this)}
-                showIcon={item.showIcon}
-                animate={tempAnim}
-              />
-            );
-
-          case "img":
-            return (
-              <ChatImageBlob
-                title={item.title}
-                text={item.text}
-                image={item.imgUrl}
-                chatAction={this._receiveChatAction.bind(this)}
-                showIcon={item.showIcon}
-                animate={tempAnim}
-              />
-            );
-
-          case "loader":
-            return <LoaderIndicator />;
-
-          case "opts":
-            return (
-              <OptionsBlob
-                optionsList={item.options}
-                chatAction={this._receiveChatAction.bind(this)}
-                animate={item.animate}
-              />
-            );
-        }
-    }
-  }
-
-  _renderChatList() {
-    // let chatList = this.props.chatStore.chatList.toJS();
+  _renderDateDialog() {
     return (
-      <View style={styles.ListView}>
-        <FlatList
-          inverted={true}
-          ref={ref => {
-            this.listRef = ref;
-          }}
-          style={{ width: "100%" }}
-          renderItem={({ item, index }) => {
-            return <Observer>{() => this._renderChatItem(item, index)}</Observer>;
-          }}
-          keyExtractor={item => "" + item.id}
-          // initialScrollIndex = {this.state.initialScrollIndex}
-
-          // Fixed Height getItemLayout
-          // getItemLayout = {(data, index) => {
-          //   return {length: 400, offset: 400 * index, index}
-          // }}
-
-          // Variable Height getItemLayout (REF: FLATLISTHEIGHTTEST PROJECT)
-          // getItemLayout={(data, index) => {
-          //   return {
-          //     length: this.state.imageHeights[index],
-          //     offset: this.state.cumulativeImageHeights[index],
-          //     index,
-          //   };
-          // }}
-          initialListSize={5} //listview optimization
-          pageSize={10} //listview optimization
-          data={this.props.chatList}
-          // extraData={this.props.chatStore.chatList.toJS()}
-        />
-      </View>
+      <DatePickerDialog
+        ref={ref => {
+          this.dateDialog = ref;
+        }}
+        onDatePicked={this.onDatePicked.bind(this)}
+      />
     );
   }
 
@@ -407,10 +336,18 @@ class ChatPage extends React.Component<Props, State> {
 
   _renderCoreUI(param) {
     return (
-      <View style={styles.container}>
+      <View style={{ flex: 1 }}>
         {/* {this._renderNavBar(param)} */}
 
-        {this._renderChatList()}
+        {/* {this._renderChatList()} */}
+
+        <ChatList
+          chatList={this.props.chatList}
+          receiveChatAction={this._receiveChatAction.bind(this)}
+          playSound={this._playSound.bind(this)}
+          stopSound={this._stopSound.bind(this)}
+          chatAnimate={this.props.chatAnimate.bind(this)}
+        />
 
         {this._renderInputBar()}
       </View>
@@ -422,14 +359,133 @@ class ChatPage extends React.Component<Props, State> {
     // const { chatViewStore } = this.props;
 
     return (
-      <Container style={styles.container}>
+      <View style={styles.container}>
         {this.props.chatViewStore.imageToPreview &&
         this.props.chatViewStore.imageToPreview.length > 0
           ? this._renderImagePreview()
           : this._renderCoreUI(param)}
-      </Container>
+
+        {this._renderDateDialog()}
+      </View>
     );
   }
 }
 
 export default ChatPage;
+
+/* Moved to ChatList.js */
+// _renderChatItem(itm, indx) {
+//   let item = itm;
+//   let tempAnim = item.animate;
+
+//   this.props.chatAnimate(indx, 0);
+//   // console.warn("RENDER ITEM:" + JSON.stringify(item));
+
+//   switch (item.isUser) {
+//     case true:
+//       switch (item.type) {
+//         case "txt":
+//           return (
+//             <ChatTextBlob
+//               title={item.title}
+//               text={item.text}
+//               isUser={true}
+//               chatAction={null}
+//               animate={tempAnim}
+//             />
+//           );
+
+//         case "audio":
+//           return (
+//             <AudioBlob
+//               id={indx}
+//               isUser={true}
+//               isPlaying={item.isPlaying}
+//               audioPath={item.audioPath}
+//               playSound={this._playSound.bind(this)}
+//               stopSound={this._stopSound.bind(this)}
+//             />
+//           );
+//       }
+//       break;
+
+//     case false:
+//       switch (item.type) {
+//         case "txt":
+//           return (
+//             <ChatTextBlob
+//               title={item.title}
+//               text={item.text}
+//               isUser={false}
+//               options={item.options}
+//               chatAction={this._receiveChatAction.bind(this)}
+//               showIcon={item.showIcon}
+//               animate={tempAnim}
+//             />
+//           );
+
+//         case "img":
+//           return (
+//             <ChatImageBlob
+//               title={item.title}
+//               text={item.text}
+//               image={item.imgUrl}
+//               chatAction={this._receiveChatAction.bind(this)}
+//               showIcon={item.showIcon}
+//               animate={tempAnim}
+//             />
+//           );
+
+//         case "loader":
+//           return <LoaderIndicator />;
+
+//         case "opts":
+//           return (
+//             <OptionsBlob
+//               optionsList={item.options}
+//               chatAction={this._receiveChatAction.bind(this)}
+//               animate={item.animate}
+//             />
+//           );
+//       }
+//   }
+// }
+
+/* Moved to ChatList.js */
+// _renderChatList() {
+//   // let chatList = this.props.chatStore.chatList.toJS();
+//   return (
+//     <View style={styles.ListView}>
+//       <FlatList
+//         inverted={true}
+//         ref={ref => {
+//           this.listRef = ref;
+//         }}
+//         style={{ width: "100%" }}
+//         renderItem={({ item, index }) => {
+//           return <Observer>{() => this._renderChatItem(item, index)}</Observer>;
+//         }}
+//         keyExtractor={item => "" + item.id}
+//         // initialScrollIndex = {this.state.initialScrollIndex}
+
+//         // Fixed Height getItemLayout
+//         // getItemLayout = {(data, index) => {
+//         //   return {length: 400, offset: 400 * index, index}
+//         // }}
+
+//         // Variable Height getItemLayout (REF: FLATLISTHEIGHTTEST PROJECT)
+//         // getItemLayout={(data, index) => {
+//         //   return {
+//         //     length: this.state.mixedHeights[index],
+//         //     offset: this.state.cumulativeMixedHeights[index],
+//         //     index,
+//         //   };
+//         // }}
+//         initialListSize={5} //listview optimization
+//         pageSize={10} //listview optimization
+//         data={this.props.chatList}
+//         // extraData={this.props.chatStore.chatList.toJS()}
+//       />
+//     </View>
+//   );
+// }

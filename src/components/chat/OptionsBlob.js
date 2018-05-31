@@ -1,8 +1,7 @@
 import React from "react";
-import { FlatList, View, StyleSheet, Animated } from "react-native";
+import { FlatList, View, StyleSheet } from "react-native";
 import { Button, Text } from "native-base";
-
-const ANIMATION_DURATION = 300;
+import { View as AnimView } from "react-native-animatable";
 
 export interface Props {
   title: String;
@@ -16,27 +15,30 @@ export interface State {}
 class OptionsBlob extends React.PureComponent<Props, State> {
   constructor(props) {
     super(props);
-
-    this._animated = new Animated.Value(0);
   }
 
   componentDidMount() {
-    Animated.timing(this._animated, {
-      toValue: 1,
-      duration: this.props.animate ? ANIMATION_DURATION : 0,
-    }).start();
+    //Animate Options Entrance
+    if (this._viewRef) {
+      if (this.props.animate === 1) {
+        this._viewRef.fadeInLeft(700);
+      } else if (this.props.animate === 2) {
+        this._viewRef.fadeInDown(500);
+      }
+    }
   }
 
   _renderItem(item, chatAction) {
+    let title = item.title.toUpperCase();
     return (
       <View style={{ paddingTop: 5, paddingBottom: 10, paddingLeft: 5, paddingRight: 5 }}>
         <Button
           rounded
           style={{ borderColor: "#333333", backgroundColor: "#fff" }}
           onPress={() => {
-            chatAction(item.title, item.action);
+            chatAction(title, item.action);
           }}>
-          <Text style={{ color: "#0078d7" }}> {item.title} </Text>
+          <Text style={{ color: "#0078d7" }}> {title} </Text>
         </Button>
       </View>
     );
@@ -45,24 +47,13 @@ class OptionsBlob extends React.PureComponent<Props, State> {
   render() {
     const { optionsList, chatAction } = this.props;
 
-    const aiRowStyles = [
-      styles.aiAnimRow,
-      { opacity: this._animated },
-      {
-        transform: [
-          {
-            translateX: this._animated.interpolate({
-              inputRange: [0, 1],
-              outputRange: [-350, 0],
-              extrapolate: "clamp",
-            }),
-          },
-        ],
-      },
-    ];
-
     return (
-      <Animated.View style={aiRowStyles}>
+      <AnimView
+        useNativeDriver={true}
+        ref={ref => {
+          this._viewRef = ref;
+        }}
+        style={styles.rowStyle}>
         <FlatList
           ref={ref => {
             this.listRef = ref;
@@ -73,13 +64,13 @@ class OptionsBlob extends React.PureComponent<Props, State> {
           keyExtractor={item => "" + item.id}
           data={optionsList}
         />
-      </Animated.View>
+      </AnimView>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  aiAnimRow: {
+  rowStyle: {
     flexDirection: "row",
     flex: 1,
     alignSelf: "flex-start",
