@@ -1,10 +1,3 @@
-/* store/ViewStore/LoginViewStore.js
- * LoginView's mobX store
- * The store has all the observable state variables that will be observed by
- * the container (LoginContainer) to render the view accordingly and also it contains
- * logic to establish login Rest API calls
- */
-
 import { observable, action } from "mobx";
 import * as Api from "../../services/api/AuthApi";
 import Axios from "axios";
@@ -13,13 +6,41 @@ import * as Utils from "../../utils/Util";
 var CancelToken = null;
 var source = null;
 
-export default class LoginViewStore {
-  @observable email = "bruce@wayne.com";
-  @observable password = "martha00";
+export default class RegisterViewStore {
+  @observable firstName = "";
+  @observable lastName = "";
+  @observable email = "";
+  @observable password = "";
   @observable isValid = false;
+  @observable firstError = "";
+  @observable lastError = "";
   @observable emailError = "";
   @observable passwordError = "";
   @observable fetchingApi = false;
+
+  @action
+  firstNameOnChange(name) {
+    this.firstName = name;
+    this.validateFirstName();
+  }
+
+  @action
+  lastNameOnChange(name) {
+    this.lastName = name;
+    this.validateLastName();
+  }
+
+  @action
+  validateFirstName() {
+    const alpha = /[^a-zA-Z ]/i.test(this.firstName) ? "Only alphabet characters" : undefined;
+    this.firstError = this.firstName.length > 2 ? alpha : "Enter 2 or more characters";
+  }
+
+  @action
+  validateLastName() {
+    const alpha = /[^a-zA-Z ]/i.test(this.lastName) ? "Only alphabet characters" : undefined;
+    this.lastError = this.lastName.length > 2 ? alpha : "Enter 2 or more characters";
+  }
 
   @action
   emailOnChange(id) {
@@ -57,17 +78,25 @@ export default class LoginViewStore {
 
   @action
   validateForm() {
-    if (this.emailError === undefined && this.passwordError === undefined) {
+    if (
+      this.firstError === undefined &&
+      this.lastError === undefined &&
+      this.emailError === undefined &&
+      this.passwordError === undefined
+    ) {
       this.isValid = true;
     }
   }
 
   @action
   clearStore() {
+    this.firstName = "";
+    this.lastName = "";
     this.email = "";
-    this.isValid = false;
-    this.emailError = "";
     this.password = "";
+    this.firstError = "";
+    this.lastError = "";
+    this.emailError = "";
     this.passwordError = "";
   }
 
@@ -80,21 +109,18 @@ export default class LoginViewStore {
     CancelToken = Axios.CancelToken;
     source = CancelToken.source();
 
-    //TODO: Temporary code to direct login
-    // setTimeout(() => {
-    //   this.fetchingApi = false;
-    //   successCb();
-    // }, 100);
-
-    //JWT Auth Login
-    Api.loginUser({ email: this.email, password: this.password }, source)
+    //JWT Node Server Register
+    Api.registerUser(
+      { first: this.firstName, last: this.lastName, email: this.email, password: this.password },
+      source,
+    )
       .then(Utils.sleeper(500)) //TODO: Remove (To mimic network delay)
       .then(response => {
         this.fetchingApi = false;
         if (response.status === 200) {
-          console.log("Login Response" + JSON.stringify(response.data));
+          console.warn("Register Response" + JSON.stringify(response.data));
           if (response.data.success) {
-            successCb([response.data.authToken, response.data.refreshToken]);
+            successCb();
           } else {
             failureCb();
           }
@@ -103,16 +129,10 @@ export default class LoginViewStore {
       .catch(error => {
         this.fetchingApi = false;
         if (Axios.isCancel(error)) {
-          console.log("Login Request cancelled");
+          console.log("Register Request cancelled");
         } else {
-          console.log("Login Error " + error);
+          console.log("Register Error - " + error);
         }
       });
-  }
-
-  @action
-  cancelRequest() {
-    source.cancel(); //Cancel Axios request
-    this.fetchingApi = false;
   }
 }

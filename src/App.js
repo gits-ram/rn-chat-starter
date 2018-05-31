@@ -6,7 +6,7 @@ import { registerScreens, registerScreenVisibilityListener } from "./container/i
 
 const stores = Stores();
 
-registerScreens(stores, MobXProvider);
+registerScreens(stores, MobXProvider);  //MobXProvider unused, instead provider.js is used now
 registerScreenVisibilityListener();
 
 Constants.Global.openLoginAsLaunch();

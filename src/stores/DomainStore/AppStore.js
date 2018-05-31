@@ -11,6 +11,10 @@ export default class AppStore {
   @observable isAndroid = Platform.OS === "android";
   @observable isIOS = Platform.OS === "ios";
 
+  //API Tokens
+  @observable authToken = "";
+  @observable refreshToken = "";
+
   @action
   changeNetworkState(state) {
     this.isConnected = state;

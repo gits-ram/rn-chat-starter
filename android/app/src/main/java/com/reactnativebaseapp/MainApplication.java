@@ -25,6 +25,8 @@ import com.rnim.rn.audio.ReactNativeAudioPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 //React Native File System
 import com.rnfs.RNFSPackage;
+//React Native Camera
+import org.reactnative.camera.RNCameraPackage;
 
 public class MainApplication extends NavigationApplication {
 
@@ -42,7 +44,8 @@ public class MainApplication extends NavigationApplication {
         new RNSpinkitPackage(), //Spinner Animation
         new ReactNativeAudioPackage(), //Audio Recorder
         new RNSoundPackage(), //Sound Playback
-        new RNFSPackage() // File System        
+        new RNFSPackage(), // File System
+             new RNCameraPackage() //Camera
     );
   }
 

@@ -9,7 +9,7 @@ class Notification extends React.Component {
           (styles.container,
           this.props.color ? { backgroundColor: this.props.color } : { backgroundColor: "#35373a" })
         }>
-        <Text style={styles.title}>-=Notification=-</Text>
+        <Text style={styles.title}>{this.props.title ? this.props.title : "-=Notification=-"}</Text>
         <Text style={styles.content}>{this.props.text}</Text>
       </View>
     );
@@ -18,7 +18,7 @@ class Notification extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: 50,
+    height: 55,
     backgroundColor: "#0773f7",
     padding: 2,
   },
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   content: {
-    fontSize: 12,
+    fontSize: 14,
     textAlign: "center",
     marginTop: 1,
     paddingBottom: 3,

@@ -47,13 +47,20 @@ export default class LoginContainer extends React.Component<Props, State> {
     });
   }
 
+  register() {
+    this.props.navigator.push({
+      screen: Constants.Screens.REGISTER.screen,
+      title: Constants.Screens.REGISTER.title,
+    });
+  }
+
   login() {
     this.props.loginViewStore.validateForm();
     if (this.props.loginViewStore.isValid) {
       //CALL Login API
       this.props.loginViewStore.requestApiAndRedirect(
-        () => {
-          this.loginSuccess();
+        tokens => {
+          this.loginSuccess(tokens);
         },
         () => {
           this.props.appStore.setLoggedIn(false);
@@ -65,9 +72,13 @@ export default class LoginContainer extends React.Component<Props, State> {
     }
   }
 
-  loginSuccess() {
+  loginSuccess(tokens) {
     this.props.loginViewStore.clearStore();
     this.props.appStore.setLoggedIn(true);
+
+    //JWT Auth Tokens
+    this.props.appStore.authToken = tokens[0];
+    this.props.appStore.refreshToken = tokens[1];
 
     //Open The Main Tabs Screen
     Constants.Global.openTabsAsMain();
@@ -125,6 +136,7 @@ export default class LoginContainer extends React.Component<Props, State> {
         loginForm={Fields}
         showLoader={store.fetchingApi}
         onLogin={() => this.login()}
+        onRegister={() => this.register()}
       />
     );
   }

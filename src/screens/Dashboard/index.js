@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Container, Text, Button } from "native-base";
-import { View, Button as But } from "react-native";
+import { Container, Content, Text, Button } from "native-base";
+import { View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { connectActionSheet } from "@expo/react-native-action-sheet";
 import styles from "./styles";
@@ -68,6 +68,19 @@ class Dashboard extends React.Component<Props, State> {
     );
   };
 
+  openCamera = () => {
+    this.props.navigator.push({
+      screen: Constants.Screens.CAMERA.screen,
+      title: Constants.Screens.CAMERA.title,
+      overrideBackPress: true,
+      passProps: {
+        showPreview: true,
+        shouldSave: false,
+        showFlash: true,
+      },
+    });
+  };
+
   showInAppNotification = (text = "This is a notification to notify") => {
     this.props.navigator.showInAppNotification({
       screen: Constants.Screens.NOTIFICATION.screen,
@@ -109,8 +122,8 @@ class Dashboard extends React.Component<Props, State> {
   render() {
     // const param = this.props.navigation.state.params;
     return (
-      <View style={{ flex: 1 }}>
-        <Container style={styles.container}>
+      <Container style={styles.container}>
+        <Content>
           <Text>
             {"This is the Dashboard . . ."}
             <Icon name="rocket" size={30} color="#900" />
@@ -122,6 +135,26 @@ class Dashboard extends React.Component<Props, State> {
             MobX Injection :
             {this.props.appStore.isLoggedIn === true ? " True" : " False"}
           </Text>
+
+          <View style={{ padding: 10 }} />
+
+          <Button
+            style={{
+              // elevation: 0,
+              alignSelf: "center",
+              justifyContent: "center",
+              width: "45%",
+              height: 40,
+              backgroundColor: Constants.Colors.primaryAccent,
+            }}
+            onPress={() => {
+              this.props.navigator.showModal({
+                screen: Constants.Screens.JWTTEST.screen,
+                title: Constants.Screens.JWTTEST.title,
+              });
+            }}>
+            <Text style={{ color: "#FFF" }}> Test JWT Auth </Text>
+          </Button>
 
           <View style={{ padding: 10 }} />
 
@@ -209,7 +242,24 @@ class Dashboard extends React.Component<Props, State> {
           </Button>
 
           <View style={{ padding: 10 }} />
-        </Container>
+
+          <Button
+            style={{
+              // elevation: 0,
+              alignSelf: "center",
+              justifyContent: "center",
+              width: "60%",
+              height: 40,
+              backgroundColor: Constants.Colors.primaryAccent,
+            }}
+            onPress={() => {
+              this.openCamera();
+            }}>
+            <Text style={{ color: "#FFF" }}> Open Camera VF </Text>
+          </Button>
+
+          <View style={{ padding: 10 }} />
+        </Content>
 
         {this.state._showFab === true ? (
           <Fab
@@ -224,7 +274,7 @@ class Dashboard extends React.Component<Props, State> {
             }}
           />
         ) : null}
-      </View>
+      </Container>
     );
   }
 }

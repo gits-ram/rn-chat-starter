@@ -7,31 +7,6 @@
 import config from "./config";
 import Axios from "axios";
 
-export function loginUser(params: any, source: any) {
-  return Axios.post(
-    config.domainUrl + config.loginUrl,
-    {
-      email: params.email,
-      password: params.password,
-    },
-    {
-      cancelToken: source.token,
-    },
-  );
-  // .then(response => {
-  //   if (response.status == 200) {
-  //     // console.log("Axios" + JSON.stringify(response.data));
-  //   }
-  // })
-  // .catch(error => {
-  //   if (Axios.isCancel(error)) {
-  //     console.log("Login Request cancelled");
-  //   } else {
-  //     console.log("Login Error " + error);
-  //   }
-  // });
-}
-
 export function getRandomPeople(params: any, source: any) {
   var instance = Axios.create();
   instance.interceptors.request.use(request => {
