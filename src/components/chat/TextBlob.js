@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Animated, TouchableOpacity } from "react-native
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import LoaderIndicator from "./LoadingIndicator";
 import { View as AnimView, Text as AnimText } from "react-native-animatable";
+import Constants from "../../global/constants";
+import { Button } from "native-base";
 
 const ROW_HEIGHT = 100;
 
@@ -57,9 +59,9 @@ class TextBlob extends React.PureComponent<Props, State> {
         <View style={styles.userTextView}>
           <Text style={styles.userText}>{text}</Text>
         </View>
-        {/* <View style={styles.userIconView}>
-          <Icon name={"account"} color={"#333333"} size={42} />
-        </View> */}
+        <View style={styles.userIconView}>
+          <Icon name={"account-circle"} color={Constants.Colors.chatPrimaryAccent} size={42} />
+        </View>
       </AnimView>
     );
   }
@@ -79,7 +81,9 @@ class TextBlob extends React.PureComponent<Props, State> {
         }}
         style={rowStyles}>
         <View style={styles.aiIconView}>
-          {showIcon === true ? <Icon name={"robot"} color={"#000"} size={42} /> : null}
+          {showIcon === true ? (
+            <Icon name={"plane-shield"} color={Constants.Colors.chatPrimaryAccent} size={42} />
+          ) : null}
         </View>
 
         <AnimView
@@ -108,31 +112,49 @@ class TextBlob extends React.PureComponent<Props, State> {
       let title = options[ind].title;
       let action = options[ind].action;
       uiOptions.push(
-        <View key={ind} style={{ flexDirection: "column", width: "100%" }}>
+        <View
+          key={ind}
+          style={{
+            flexDirection: "column",
+            width: "100%",
+            paddingTop: ind === 0 ? 10 : undefined,
+          }}>
           <TouchableOpacity
-            style={{
-              width: "90%",
-              alignSelf: "center",
-              alignItems: "center",
-              backgroundColor: "white",
-              padding: 10,
-              paddingLeft: 30,
-              paddingRight: 30,
-            }}
+            style={
+              title.toLowerCase() === "yes" || title.toLowerCase() === "no"
+                ? styles.optionsTouchableWithBorder
+                : styles.optionsTouchable
+            }
             onPress={() => {
               chatAction(title, action);
             }}>
-            <View>
-              <Text style={{ fontWeight: "bold", color: "#0078d7", fontSize: 16 }}>{title}</Text>
-            </View>
+            <Text
+              style={{
+                fontWeight: "400",
+                color: Constants.Colors.chatOptions,
+                fontSize: Constants.Colors.optionsFontSize,
+                paddingVertical: 5,
+                // borderColor: Constants.Colors.chatOptions,
+                // borderWidth: 1,
+                // borderRadius: 15,
+                // paddingHorizontal: 10,
+                // paddingVertical: 5,
+              }}>
+              {title}
+            </Text>
           </TouchableOpacity>
-
           {/* //Button Separator// */}
-          {options.length > 1 && ind < options.length - 1 ? (
+          {title.toLowerCase() !== "yes" &&
+          title.toLowerCase() !== "no" &&
+          options.length > 1 &&
+          ind < options.length - 1 ? (
             <View
               style={{ alignSelf: "center", height: 1, width: "80%", backgroundColor: "grey" }}
             />
           ) : null}
+          <View
+            style={{ paddingTop: 5, paddingBottom: ind === options.length - 1 ? 5 : undefined }}
+          />
         </View>,
       );
     }
@@ -143,9 +165,11 @@ class TextBlob extends React.PureComponent<Props, State> {
   _renderTextAndOptions(text, options, chatAction) {
     return (
       <View style={styles.optionsView}>
-        <Text style={[{ alignSelf: "flex-start" }, styles.aiText, { paddingRight: 10 }]}>
-          {text}
-        </Text>
+        <View style={styles.aiOptTextView}>
+          <Text style={[{ alignSelf: "flex-start" }, styles.aiText, { paddingRight: 10 }]}>
+            {text}
+          </Text>
+        </View>
         {this._generateOptions(options, chatAction)}
       </View>
     );
@@ -173,25 +197,25 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   userIconView: {
-    flex: 0.2,
+    flex: 0.15,
     alignSelf: "flex-end",
     alignItems: "center",
   },
   userTextView: {
-    flex: 0.8,
-    alignSelf: "flex-start",
+    flex: 0.7,
+    alignSelf: "flex-end",
     alignItems: "flex-end",
-    // marginLeft: 40,
+    marginRight: -15,
+    borderRadius: 8,
   },
   userText: {
     backgroundColor: "#fff",
-    color: "#707070",
+    color: Constants.Colors.userChatText,
     borderRadius: 18,
     padding: 10,
     fontSize: 16,
     marginRight: 10, //-5,
-    borderColor: "#707070",
-    borderWidth: 2,
+    // borderWidth: 2,
   },
   title: {
     fontSize: 13,
@@ -204,32 +228,35 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   aiIconView: {
-    flex: 0.2,
+    flex: 0.15,
     alignSelf: "flex-end",
     alignItems: "center",
   },
   aiTextView: {
-    flex: 0.65, //0.8 if the box should stetch to far right end of screen
-    alignSelf: "flex-end",
+    flex: 0.7, //0.8 if the box should stetch to far right end of screen
+    alignSelf: "flex-start",
     alignItems: "flex-start",
-    // marginRight: 40,
     borderRadius: 8,
   },
   aiTextViewWithOpt: {
-    flex: 0.65, //0.8 if the box should stetch to far right end of screen
+    flex: 0.7, //0.8 if the box should stetch to far right end of screen
     alignSelf: "flex-end",
     alignItems: "flex-start",
-    // marginRight: 40,
-    backgroundColor: "#fff", //"#dbdbdb",
     borderRadius: 8,
-    marginBottom: 10,
+    // marginBottom: 10,
+  },
+  aiOptTextView: {
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    backgroundColor: Constants.Colors.botChatBlob,
+    width: "100%",
   },
   aiText: {
-    backgroundColor: "#fff", //"#dbdbdb",
+    backgroundColor: Constants.Colors.botChatBlob, //"#dbdbdb",
     padding: 10,
     fontSize: 16,
     borderRadius: 8,
-    color: "#707070",
+    color: Constants.Colors.botChatText, //#707070
   },
   optionsView: {
     flexDirection: "column",
@@ -239,6 +266,25 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignSelf: "flex-start",
     alignItems: "center",
+  },
+  optionsTouchable: {
+    width: "90%",
+    alignSelf: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  optionsTouchableWithBorder: {
+    width: "90%",
+    alignSelf: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Constants.Colors.chatOptions,
   },
 });
 

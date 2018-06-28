@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  TextInput,
 } from "react-native";
 import { Observer, inject, observer } from "mobx-react/native";
 import { View as AnimView, Text as AnimText } from "react-native-animatable";
@@ -17,6 +18,7 @@ import styles from "./styles";
 import ChatList from "./ChatList";
 import Constants from "../../global/constants";
 import ImagePreviewer from "../../components/SingleImagePreviewer";
+import TemplateFullView from "../../components/chat/TemplateFullView";
 import { DatePickerDialog } from "../../components/datepickerdialog";
 import moment from "moment";
 
@@ -90,13 +92,29 @@ class ChatPage extends React.Component<Props, State> {
     this.props.chatViewStore.isKeyboardOpen = false;
   }
 
-  _receiveChatAction(ipTxt, action) {
-    if (action === "imgPreview") {
-      chatView.imageToPreview = ipTxt;
+  _receiveChatAction(inputData, action) {
+    if (action === "phone/imgPreview") {
+      chatView.imageToPreview = inputData;
     } else if (action === "phone/datepicker") {
       this.invokeDatePickerDialog();
+    } else if (action === "phone/bookingdetails") {
+      this.props.navigator.push({
+        screen: Constants.Screens.TEMPLATEBLOBFV.screen,
+        title: "Booking Details",
+        navigatorStyle: {
+          navBarButtonColor: Constants.Colors.white,
+          navBarTextColor: Constants.Colors.white,
+          navigationBarColor: Constants.Colors.black,
+          navBarBackgroundColor: Constants.Colors.chatPrimaryAccent,
+          statusBarColor: Constants.Colors.chatDarkAccent,
+          tabFontFamily: "Roboto",
+        },
+        passProps: {
+          slideData: inputData,
+        },
+      });
     } else {
-      this.props.sendPressed(ipTxt, action);
+      this.props.sendPressed(inputData, action);
     }
   }
 
@@ -185,39 +203,19 @@ class ChatPage extends React.Component<Props, State> {
     return (
       <View style={styles.InputBarView}>
         {chatView.voiceRecording ? (
-          <View
-            style={{
-              flex: chatView.voiceRecording ? 0.85 : 0.9,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-            }}>
-            <AnimView
-              useNativeDriver={true}
-              animation="flash"
-              easing="ease-in-out-sine"
-              iterationCount="infinite"
-              style={{ flex: 0.3, alignItems: "center", justifyContent: "center" }}>
-              <Icon name="microphone" size={30} color={"#FF0000"} />
-            </AnimView>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                flex: 0.7,
-                justifyContent: "space-between",
-              }}>
-              <AnimText
-                style={{ fontSize: 15 }}
-                useNativeDriver={true}
-                animation="pulse"
-                easing="ease-in-out-sine"
-                iterationCount="infinite">
-                {recordTime}
-              </AnimText>
-              <Text style={{ color: "grey" }}> Slide to Cancel </Text>
-            </View>
-          </View>
+          <Item rounded style={{ flex: 0.9 }}>
+            <Input
+              ref={ref => {
+                this.input = ref;
+              }}
+              onChangeText={text => {
+                chatView.inputString = text;
+              }}
+              style={{ minHeight: 20, maxHeight: 120 }}
+              multiline={true}
+              placeholder="Listening..."
+            />
+          </Item>
         ) : (
           <Item rounded style={{ flex: 0.9 }}>
             <Input
@@ -227,23 +225,37 @@ class ChatPage extends React.Component<Props, State> {
               onChangeText={text => {
                 chatView.inputString = text;
               }}
-              style={{ height: 90 }}
+              style={{ minHeight: 20, maxHeight: 120 }}
               multiline={true}
               placeholder="Start typing here.."
             />
           </Item>
         )}
 
-        <AnimView
-          style={{
-            flex: chatView.voiceRecording ? 0.15 : 0.1,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          ref={ref => {
-            this._micRef = ref;
-          }}>
-          {chatView.inputString.length === 0 && !chatView.isKeyboardOpen ? (
+        <View style={{ flexDirection: "row", flex: 0.25, alignItems: "center" }}>
+          <TouchableOpacity
+            onPress={() => {
+              this._sendChat();
+            }}
+            style={{
+              padding: 2,
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+            <Icon
+              name="send"
+              size={22}
+              color={Constants.Colors.darkAccent}
+              style={{ marginTop: -3 }}
+            />
+          </TouchableOpacity>
+
+          <AnimView
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+            ref={ref => {
+              this._micRef = ref;
+            }}>
             <TouchableWithoutFeedback
               onPressIn={evt => {
                 chatView.micTouchX = Math.floor(evt.nativeEvent.locationX);
@@ -270,28 +282,72 @@ class ChatPage extends React.Component<Props, State> {
               style={{ padding: chatView.voiceRecording ? 2 : 6 }}>
               <Icon
                 name="microphone"
-                size={chatView.voiceRecording ? 40 : 30}
-                color={Constants.Colors.darkAccent}
+                size={chatView.voiceRecording ? 30 : 22}
+                color={chatView.voiceRecording ? "red" : Constants.Colors.darkAccent}
               />
             </TouchableWithoutFeedback>
-          ) : (
-            <TouchableOpacity
-              onPress={() => {
-                this._sendChat();
-              }}
-              style={{ padding: 3, paddingRight: 2 }}>
-              <Icon
-                name="comment"
-                size={30}
-                color={Constants.Colors.darkAccent}
-                style={{ marginTop: -3 }}
-              />
-            </TouchableOpacity>
-          )}
-        </AnimView>
+          </AnimView>
+        </View>
       </View>
     );
   }
+
+  //--- InputBar Dynamic Switch Between Send|Mic Buttons Code ---//
+  // <AnimView
+  //         style={{
+  //           flex: chatView.voiceRecording ? 0.15 : 0.1,
+  //           alignItems: "center",
+  //           justifyContent: "center",
+  //         }}
+  //         ref={ref => {
+  //           this._micRef = ref;
+  //         }}>
+  // {chatView.inputString.length === 0 && !chatView.isKeyboardOpen ? (
+  //   <TouchableWithoutFeedback
+  //     onPressIn={evt => {
+  //       chatView.micTouchX = Math.floor(evt.nativeEvent.locationX);
+  //       chatView.micTouchY = Math.floor(evt.nativeEvent.locationY);
+  //       this._micRef.swing(300).then(() => {
+  //         this.props.startRecording();
+  //       });
+  //     }}
+  //     onPressOut={evt => {
+  //       let tempX = evt.nativeEvent.locationX;
+  //       let tempY = evt.nativeEvent.locationY;
+  //       this._micRef.zoomOut(300).then(() => {
+  //         if (
+  //           Math.abs(Math.floor(tempX) - chatView.micTouchX > 30) ||
+  //           Math.abs(Math.floor(tempY) - chatView.micTouchY > 30)
+  //         ) {
+  //           this.props.stopRecording(true);
+  //         } else {
+  //           this.props.stopRecording(false);
+  //         }
+  //         this._micRef.zoomIn(300);
+  //       });
+  //     }}
+  //     style={{ padding: chatView.voiceRecording ? 2 : 6 }}>
+  //     <Icon
+  //       name="microphone"
+  //       size={chatView.voiceRecording ? 40 : 30}
+  //       color={Constants.Colors.darkAccent}
+  //     />
+  //   </TouchableWithoutFeedback>
+  // ) : (
+  //   <TouchableOpacity
+  //     onPress={() => {
+  //       this._sendChat();
+  //     }}
+  //     style={{ padding: 3, paddingRight: 2 }}>
+  //     <Icon
+  //       name="send"
+  //       size={30}
+  //       color={Constants.Colors.darkAccent}
+  //       style={{ marginTop: -3 }}
+  //     />
+  //   </TouchableOpacity>
+  // )}
+  // </AnimView>
 
   _renderDateDialog() {
     return (
@@ -364,7 +420,6 @@ class ChatPage extends React.Component<Props, State> {
         this.props.chatViewStore.imageToPreview.length > 0
           ? this._renderImagePreview()
           : this._renderCoreUI(param)}
-
         {this._renderDateDialog()}
       </View>
     );

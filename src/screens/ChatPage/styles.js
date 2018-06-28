@@ -18,7 +18,8 @@ const styles: any = StyleSheet.create({
   InputBarView: {
     marginTop: 3,
     width: "100%",
-    height: 45,
+    flex: 1,
+    minHeight: 30,
     position: "absolute",
     bottom: 0,
     // flex: 0.1,

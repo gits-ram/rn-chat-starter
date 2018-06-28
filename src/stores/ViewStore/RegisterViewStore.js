@@ -118,7 +118,7 @@ export default class RegisterViewStore {
       .then(response => {
         this.fetchingApi = false;
         if (response.status === 200) {
-          console.warn("Register Response" + JSON.stringify(response.data));
+          console.log("Register Response" + JSON.stringify(response.data));
           if (response.data.success) {
             successCb();
           } else {

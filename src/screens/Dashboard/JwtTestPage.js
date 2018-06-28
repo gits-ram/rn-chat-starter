@@ -95,26 +95,50 @@ export default class JwtTestPage extends Component<Props, State> {
   render() {
     return (
       <Container style={{ flex: 1, backgroundColor: "white" }}>
-        <Button
-          style={{
-            width: 200,
-            height: 45,
-            marginTop: 5,
-            paddingBottom: 10,
-            alignSelf: "center",
-            justifyContent: "center",
-          }}
-          onPress={() => {
-            this.getAllUsers();
-          }}>
-          <Text
+        <View style={{ height: 45, flexDirection: "row" }}>
+          <Button
             style={{
-              fontSize: 21,
-              color: "white",
+              flex: 0.65,
+              borderRadius: 5,
+              marginTop: 5,
+              paddingVertical: 5,
+              marginLeft: 5,
+              marginRight: 5,
+              justifyContent: "center",
+            }}
+            onPress={() => {
+              this.getAllUsers();
             }}>
-            Get All Reg Users
-          </Text>
-        </Button>
+            <Text
+              style={{
+                fontSize: 21,
+                color: "white",
+              }}>
+              Get All Reg Users
+            </Text>
+          </Button>
+          <Button
+            style={{
+              flex: 0.35,
+              borderRadius: 5,
+              marginTop: 5,
+              paddingVertical: 5,
+              marginLeft: 5,
+              marginRight: 5,
+              justifyContent: "center",
+            }}
+            onPress={() => {
+              this.setState({ users: [] });
+            }}>
+            <Text
+              style={{
+                fontSize: 21,
+                color: "white",
+              }}>
+              Clear
+            </Text>
+          </Button>
+        </View>
 
         <Content>
           <View style={{ flex: 1 }}>

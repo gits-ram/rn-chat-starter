@@ -62,9 +62,13 @@ export default class LoginContainer extends React.Component<Props, State> {
         tokens => {
           this.loginSuccess(tokens);
         },
-        () => {
+        err => {
           this.props.appStore.setLoggedIn(false);
-          this.showToastError("User not found. Go Register!", "top");
+          if (err.response.status === 400) {
+            this.showToastError("User not found. Go Register!", "top");
+          } else {
+            this.showToastError("Something went wrong. Try again later..", "top");
+          }
         },
       );
     } else {
@@ -76,9 +80,11 @@ export default class LoginContainer extends React.Component<Props, State> {
     this.props.loginViewStore.clearStore();
     this.props.appStore.setLoggedIn(true);
 
-    //JWT Auth Tokens
-    this.props.appStore.authToken = tokens[0];
-    this.props.appStore.refreshToken = tokens[1];
+    //--- Store JWT Auth Tokens ---//
+    if (tokens && tokens.length > 1) {
+      this.props.appStore.authToken = tokens[0];
+      this.props.appStore.refreshToken = tokens[1];
+    }
 
     //Open The Main Tabs Screen
     Constants.Global.openTabsAsMain();

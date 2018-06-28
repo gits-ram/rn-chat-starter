@@ -15,12 +15,14 @@ export default class ChatContainer extends React.Component<Props, State> {
         <Text style={styles.welcome}>Chat Dummy Landing Page</Text>
 
         <Button
-          title={"Open Chat Page"}
+          title={"Open ChatBot App"}
           onPress={() => {
-            this.props.navigator.push({
-              screen: Constants.Screens.CHAT.screen,
-              title: "Type To Chat",
-            });
+            Constants.Global.openChatSplashScreen();
+
+            // this.props.navigator.push({
+            //   screen: Constants.Screens.CHAT.screen,
+            //   title: "Type To Chat",
+            // });
           }}
         />
       </View>

@@ -7,7 +7,8 @@ import ChatImageBlob from "../../components/chat/ImageBlob";
 import LoaderIndicator from "../../components/chat/LoadingIndicator";
 import OptionsBlob from "../../components/chat/OptionsBlob";
 import AudioBlob from "../../components/chat/AudioBlob";
-import ChatCarouselBlob from "../../components/chat/CarouselBlob";
+import CarouselBlob from "../../components/chat/CarouselBlob";
+import TemplateBlob from "../../components/chat/TemplateBlob";
 
 export interface State {}
 export interface Props {}
@@ -128,11 +129,23 @@ export default class ChatList extends React.Component<Props, State> {
 
           case "carousel":
             return (
-              <ChatCarouselBlob
+              <CarouselBlob
                 slidesList={item.slides}
                 chatAction={this.props.receiveChatAction.bind(this)}
                 animate={tempAnim}
                 showPagination={false}
+                showIcon={item.showIcon}
+              />
+            );
+
+          case "template":
+            return (
+              <TemplateBlob
+                slidesList={item.slides}
+                chatAction={this.props.receiveChatAction.bind(this)}
+                animate={tempAnim}
+                showPagination={false}
+                showIcon={item.showIcon}
               />
             );
         }

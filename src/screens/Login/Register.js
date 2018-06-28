@@ -23,7 +23,17 @@ export default class Register extends Component<Props, State> {
   registerUser() {
     this.props.registerViewStore.requestApiAndRedirect(
       () => {
-        console.warn("Registered Successfully");
+        // console.warn("Registered Successfully");
+        let text = "SignUp Successfull. You may now login..";
+        this.props.navigator.showInAppNotification({
+          screen: Constants.Screens.NOTIFICATION.screen,
+          passProps: { text },
+          autoDismissTimerSec: 2,
+        });
+
+        setTimeout(() => {
+          this.props.navigator.pop();
+        }, 1000);
       },
       () => {
         console.warn("Registration Failed");

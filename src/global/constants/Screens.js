@@ -10,6 +10,9 @@ export default {
   DRAWER: {
     screen: "afls.Drawer",
   },
+  SPLASH: {
+    screen: "afls.splash",
+  },
 
   //// TAB SCREENS ////
   DASH: {
@@ -26,7 +29,7 @@ export default {
   },
   CHAT: {
     screen: "afls.chat.chatbot",
-    title: "Type To Chat",
+    title: "Freight Bot",
   },
 
   ///// COMPONENT SCREENS /////
@@ -97,5 +100,9 @@ export default {
   CAMERA: {
     screen: "afls.camera",
     title: "Camera",
+  },
+  TEMPLATEBLOBFV: {
+    screen: "afls.chat.chatbot.templateblobfv",
+    title: "Booking Receipt",
   },
 };
