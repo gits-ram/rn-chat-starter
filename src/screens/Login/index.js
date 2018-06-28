@@ -1,5 +1,5 @@
 import * as React from "react";
-import { UIManager, Platform } from "react-native";
+import { UIManager, Platform, Image } from "react-native";
 import { Image as AnimImage, View as AnimView } from "react-native-animatable";
 import {
   Container,
@@ -10,10 +10,11 @@ import {
   Button,
   Text,
   View,
-  Icon,
   Footer,
   Spinner,
 } from "native-base";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Constants from "../../global/constants";
 import * as Spiner from "../../../native-base-theme/components/Spinner";
 import FadeInView from "../../components/FadeInView";
 
@@ -72,14 +73,15 @@ class Login extends React.Component<Props, State> {
         <Header style={{ height: 210 }}>
           <Body style={{ alignItems: "center" }}>
             {/* <Icon name="md-planet" style={{ fontSize: 104 }} /> */}
-            <AnimView useNativeDriver={true}>
-              <AnimImage
-                useNativeDriver={true}
+            <AnimView
+              useNativeDriver={true}
+              ref={ref => {
+                this._headerRef = ref;
+              }}>
+              {/* <Icon name={"plane-shield"} color={Constants.Colors.white} size={140} /> */}
+              <Image
                 source={require("../../../assets/img/clientlogo.png")}
                 style={styles.welcomeImage}
-                ref={ref => {
-                  this._headerRef = ref;
-                }}
               />
             </AnimView>
             <Title>ReactNativeBaseApp</Title>

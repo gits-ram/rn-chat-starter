@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList, View, StyleSheet } from "react-native";
 import { Button, Text } from "native-base";
 import { View as AnimView } from "react-native-animatable";
+import Constants from "../../global/constants";
 
 export interface Props {
   title: String;
@@ -38,7 +39,7 @@ class OptionsBlob extends React.PureComponent<Props, State> {
           onPress={() => {
             chatAction(title, item.action);
           }}>
-          <Text style={{ color: "#0078d7" }}> {title} </Text>
+          <Text style={{ color: Constants.Colors.chatOptions }}> {title} </Text>
         </Button>
       </View>
     );

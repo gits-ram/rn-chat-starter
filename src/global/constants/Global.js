@@ -82,4 +82,42 @@ const openLoginModalIn = (navigator: { showModal: Function }, withCancelButton: 
   });
 };
 
-export default { openLoginAsLaunch, openTabsAsMain };
+const openChatSplashScreen = () => {
+  Navigation.startSingleScreenApp({
+    screen: {
+      screen: Constants.Screens.SPLASH.screen,
+      title: "Chat Splash",
+      navigatorStyle: {
+        screenBackgroundColor: "black",
+        navBarHidden: true,
+      },
+      navigatorButtons: {},
+      animationType: "fade",
+    },
+  });
+};
+
+const openChatAsDedicatedApp = () => {
+  Navigation.startSingleScreenApp({
+    screen: {
+      screen: Constants.Screens.CHAT.screen, // unique ID registered with Navigation.registerScreen
+      title: Constants.Screens.CHAT.title, // title of the screen as appears in the nav bar (optional)
+      navigatorStyle: {
+        screenBackgroundColor: "black",
+        tabBarBackgroundColor: Constants.Colors.chatPrimaryAccent,
+        navBarButtonColor: Constants.Colors.white,
+        tabBarButtonColor: Constants.Colors.chatDarkAccent,
+        navBarTextColor: Constants.Colors.white,
+        tabBarSelectedButtonColor: Constants.Colors.white,
+        navigationBarColor: Constants.Colors.black,
+        navBarBackgroundColor: Constants.Colors.chatPrimaryAccent,
+        statusBarColor: Constants.Colors.chatDarkAccent,
+        tabFontFamily: "Roboto",
+      }, // override the navigator style for the screen, see "Styling the navigator" below (optional)
+      navigatorButtons: {}, // override the nav buttons for the screen, see "Adding buttons to the navigator" below (optional)
+      animationType: "fade",
+    },
+  });
+};
+
+export default { openLoginAsLaunch, openTabsAsMain, openChatSplashScreen, openChatAsDedicatedApp };

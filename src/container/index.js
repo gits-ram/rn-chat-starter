@@ -8,10 +8,12 @@ import Drawer from "./Drawer";
 import NotificationBox from "../components/Notification";
 import LightBox from "../components/lightbox/LightBox";
 import Camera from "../components/StillCamera";
+import TemplateBlobFullView from "../components/chat/TemplateFullView";
 
 import Dash from "./DashboardContainer"; //Dashboard
 import Components from "./HomeContainer"; //Home Page
 import ChatDummyLanding from "./ChatContainer"; //Chat Dummy Landing Page
+import Splash from "./SplashContainer"; // Chat Splash Screen
 import Chat from "./ChatContainer/OriginalContainer"; //Chat Dummy Landing Page
 import Login from "./LoginContainer";
 import Register from "../screens/Login/Register";
@@ -57,6 +59,9 @@ export function registerScreens(store, provider) {
   Navigation.registerComponent(Constants.Screens.CAMERA.screen, () =>
     wrapProvider(Camera, store, false, false),
   );
+  Navigation.registerComponent(Constants.Screens.TEMPLATEBLOBFV.screen, () =>
+    wrapProvider(TemplateBlobFullView, store, false, false),
+  );
 
   Navigation.registerComponent(Constants.Screens.DASH.screen, () =>
     wrapProvider(Dash, store, true, true),
@@ -67,6 +72,9 @@ export function registerScreens(store, provider) {
   //Dummy Chat Landing Page
   Navigation.registerComponent(Constants.Screens.CHAT_DUMMY_LANDING.screen, () =>
     wrapProvider(ChatDummyLanding, store, false),
+  );
+  Navigation.registerComponent(Constants.Screens.SPLASH.screen, () =>
+    wrapProvider(Splash, store, false),
   );
   Navigation.registerComponent(Constants.Screens.CHAT.screen, () =>
     wrapProvider(Chat, store, false),

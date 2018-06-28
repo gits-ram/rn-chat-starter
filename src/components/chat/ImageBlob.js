@@ -3,6 +3,7 @@ import { Image, View, Dimensions, TouchableHighlight } from "react-native";
 import { Text, Card, CardItem, Thumbnail, Body, Left, Spinner } from "native-base";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { View as AnimView } from "react-native-animatable";
+import Constants from "../../global/constants";
 
 var width = Dimensions.get("window").width;
 const messages = ["hello", "this is supposed to be a bit of a long line.", "bye"];
@@ -69,8 +70,10 @@ export default class ImageBlob extends React.PureComponent {
 
   _renderIconOnLeft(showIcon) {
     return (
-      <View style={{ paddingRight: 5, alignSelf: "flex-end" }}>
-        {showIcon === true ? <Icon name={"robot"} color={"#333333"} size={42} /> : null}
+      <View>
+        {showIcon === true ? (
+          <Icon name={"plane-shield"} color={Constants.Colors.chatPrimaryAccent} size={42} />
+        ) : null}
       </View>
     );
   }
@@ -85,33 +88,22 @@ export default class ImageBlob extends React.PureComponent {
           <Body style={styles.bodyContainer}>
             <TouchableHighlight
               onPress={() => {
-                this.props.chatAction(imgUrl, "imgPreview");
+                this.props.chatAction(imgUrl, "phone/imgPreview");
               }}>
               <Image
                 source={{ uri: imgUrl }}
-                style={{
-                  width: 220,
-                  height: 160,
-                  flex: 0,
-                }}
+                style={{ width: 220, height: 160, flex: 0 }}
                 onLoad={e => this.setState({ imageLoading: false })}
               />
             </TouchableHighlight>
             {this.state.imageLoading === true ? (
-              <Spinner
-                color="#356CB1"
-                style={{
-                  flex: 0,
-                  marginTop: -120,
-                  height: 120,
-                  width: 150,
-                  alignSelf: "center",
-                }}
-              />
+              <Spinner color={Constants.Colors.chatPrimaryAccent} style={styles.spinner} />
             ) : null}
           </Body>
         </CardItem>
-        <Text style={{ marginLeft: 5, color: "#707070" }}>{this.props.text}</Text>
+        <View style={styles.commentTextView}>
+          <Text style={{ color: Constants.Colors.botChatText }}>{this.props.text}</Text>
+        </View>
       </Card>
     );
   }
@@ -121,12 +113,11 @@ export default class ImageBlob extends React.PureComponent {
       <View>
         <TouchableHighlight
           onPress={() => {
-            this.props.chatAction(imgUrl, "imgPreview");
+            this.props.chatAction(imgUrl, "phone/imgPreview");
           }}>
           <Image
             source={{ uri: imgUrl }}
             style={{
-              marginLeft: "10%",
               height: 160,
               width: 200,
               flex: 0,
@@ -163,11 +154,13 @@ export default class ImageBlob extends React.PureComponent {
         style={styles.mainContainer}
         onLayout={this.onLayout}>
         {/* Render UserLogo To Left of Card */}
-        {this._renderIconOnLeft(this.props.showIcon)}
+        <View style={styles.aiIconView}>{this._renderIconOnLeft(this.props.showIcon)}</View>
 
-        {(this.props.text && this.props.text.length) > 0
-          ? this._renderImageCardWithComments(imgUrl)
-          : this._renderImageOnly(imgUrl)}
+        <View style={styles.aiImageView}>
+          {(this.props.text && this.props.text.length) > 0
+            ? this._renderImageCardWithComments(imgUrl)
+            : this._renderImageOnly(imgUrl)}
+        </View>
       </AnimView>
     );
   }
@@ -177,16 +170,26 @@ const styles = {
   mainContainer: {
     flex: 1,
     flexDirection: "row",
-    padding: 5,
-    width: "85%",
     // transform: [{ scaleY: -1 }],
     alignItems: "flex-start",
     justifyContent: "flex-start",
+    marginBottom: 10,
+  },
+  aiIconView: {
+    flex: 0.15,
+    alignSelf: "flex-end",
+    alignItems: "center",
+  },
+  aiImageView: {
+    flex: 0.7, //0.8 if the box should stetch to far right end of screen
+    alignSelf: "flex-start",
+    alignItems: "flex-start",
+    marginLeft: -3,
   },
   cardContainer: {
     flex: 0,
-    width: "85%",
-    backgroundColor: "#FFF",
+    width: "100%", //85% before when no outer view with flex:0.85 was there
+    backgroundColor: "#FFF", //"#FFF",
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
@@ -194,12 +197,10 @@ const styles = {
   cardItemContainer: {
     flex: 0,
     width: "95%",
-    paddingTop: 4,
-    paddingBottom: 4,
-    paddingLeft: 7,
-    paddingRight: 7,
-    marginTop: 5,
-    backgroundColor: "#F5F5F5",
+    paddingVertical: 4,
+    paddingHorizontal: 2,
+    // marginTop: 5,
+    backgroundColor: "#FFF", //"#F5F5F5",
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
@@ -211,10 +212,25 @@ const styles = {
     marginLeft: 0,
     marginRight: 0,
     padding: 0,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#FFF", //"#F5F5F5",
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
+  },
+  commentTextView: {
+    width: "100%",
+    padding: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    backgroundColor: Constants.Colors.botChatBlob,
+    alignItems: "center",
+  },
+  spinner: {
+    flex: 0,
+    marginTop: -120,
+    height: 120,
+    width: 150,
+    alignSelf: "center",
   },
 };
 

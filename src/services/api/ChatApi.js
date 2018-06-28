@@ -69,7 +69,7 @@ export function postUserAction(params: any, source: any) {
         imageUrl: dummyImages[Math.floor(Math.random() * 7)],
       },
     ];
-  } else if (params.text.toLowerCase() === "pics") {
+  } else if (params.action === "demo/pics" || params.text.toLowerCase() === "pics") {
     responseObject = [
       {
         type: "img",
@@ -88,7 +88,7 @@ export function postUserAction(params: any, source: any) {
       text: null,
       imageUrl: dummyImages[Math.floor(Math.random() * 7)],
     };
-  } else if (params.text.toLowerCase() === "fly") {
+  } else if (params.action === "demo/sequ" || params.text.toLowerCase() === "fly") {
     responseObject = {
       type: "txt",
       text: "Where would you like to go?",
@@ -120,7 +120,7 @@ export function postUserAction(params: any, source: any) {
         options: [{ title: "Yes", action: "booking/city=NewYork" }, { title: "No", action: "" }],
       },
     ];
-  } else if (params.text.toLowerCase() === "eat") {
+  } else if (params.action === "demo/opts" || params.text.toLowerCase() === "eat") {
     responseObject = [
       {
         type: "txt",
@@ -164,7 +164,7 @@ export function postUserAction(params: any, source: any) {
         text: "Orange",
       },
     ];
-  } else if (params.text.toLowerCase() === "boeing") {
+  } else if (params.action === "demo/carousel" || params.text.toLowerCase() === "boeing") {
     responseObject = [
       {
         type: "txt",
@@ -342,6 +342,194 @@ export function postUserAction(params: any, source: any) {
         text: "Couldn't process the voice input.",
       },
     ];
+  } else if (params.text.toLowerCase() === "availability") {
+    responseObject = {
+      type: "template",
+      slides: [
+        {
+          id: 0,
+          templateType: "template-availability",
+          headerTitle: "Flight Availability",
+          headerValue: "Available",
+          cargoDetails: [
+            { param: "Max Dimensions", value: "300x400x100cm" },
+            { param: "Max Weight", value: "1500Kgs" },
+            { param: "Perishable allowed", value: "Yes" },
+          ],
+          cargoRoutes: [
+            {
+              flight: "KL0605",
+              type: "Non-Stop",
+              departure: "Amsterdam(AMS)",
+              arrival: "SanFrancisco(SFO)",
+              departs: "Wed, Mar 30 10:00PM",
+              arrives: "Thu, Mar 31 8:00PM",
+            },
+          ],
+          cargoPricing: { shipping: "$4000", tax: "$340", discount: "$100", total: "$4240" },
+          illustration: require("../../../assets/img/flight/Boe737.jpg"),
+          options: [
+            { id: 0, title: "Book Flight", action: "flight/booking" },
+            { id: 1, title: "Contact Carrier", action: "flight/contact" },
+          ],
+        },
+      ],
+    };
+  } else if (params.action === "demo/avail" || params.text.toLowerCase() === "3xavailability") {
+    responseObject = {
+      type: "template",
+      slides: [
+        {
+          id: 0,
+          templateType: "template-availability",
+          headerTitle: "Flight Availability",
+          headerValue: "Available",
+          cargoDetails: [
+            { param: "Max Dimensions", value: "150x200x200cm" },
+            { param: "Max Weight", value: "500Kgs" },
+            { param: "Perishable allowed", value: "Yes" },
+          ],
+          cargoRoutes: [
+            {
+              flight: "LF3125",
+              type: "",
+              departure: "Amsterdam(AMS)",
+              arrival: "SanFrancisco(SFO)",
+              departs: "Wed, Mar 30 11:00PM",
+              arrives: "Thu, Mar 31 9:00PM",
+            },
+          ],
+          cargoPricing: { shipping: "$4300", tax: "$340", discount: "$100", total: "$4540" },
+          illustration: require("../../../assets/img/flight/Boe737.jpg"),
+          options: [
+            { id: 0, title: "Book Flight", action: "flight/booking" },
+            { id: 1, title: "Contact Carrier", action: "flight/contact" },
+          ],
+        },
+        {
+          id: 1,
+          templateType: "template-availability",
+          headerTitle: "Flight Availability",
+          headerValue: "Available",
+          cargoDetails: [
+            { param: "Max Weight", value: "2500Kgs" },
+            { param: "Perishable allowed", value: "No" },
+          ],
+          cargoRoutes: [
+            {
+              flight: "CA48371",
+              type: "Non-Stop",
+              departure: "Amsterdam(AMS)",
+              arrival: "SanFrancisco(SFO)",
+              departs: "Wed, Mar 30 7:00PM",
+              arrives: "Thu, Mar 31 5:00PM",
+            },
+          ],
+          cargoPricing: { shipping: "$4600", tax: "$380", discount: "$100", total: "$4880" },
+          illustration: require("../../../assets/img/flight/Boe737.jpg"),
+          options: [
+            { id: 0, title: "Book Flight", action: "flight/booking" },
+            { id: 1, title: "Contact Carrier", action: "flight/contact" },
+          ],
+        },
+        {
+          id: 2,
+          templateType: "template-availability",
+          headerTitle: "Flight Availability",
+          headerValue: "Available",
+          cargoDetails: [
+            { param: "Space Available", value: "Yes" },
+            { param: "Max Weight", value: "1500Kgs" },
+            { param: "Perishable allowed", value: "Yes" },
+          ],
+          cargoRoutes: [
+            {
+              flight: "KL0605",
+              type: "",
+              departure: "Amsterdam(AMS)",
+              arrival: "SanFrancisco(SFO)",
+              departs: "Wed, Mar 30 10:00PM",
+              arrives: "Thu, Mar 31 8:00PM",
+            },
+          ],
+          cargoPricing: { shipping: "$4000", tax: "$340", discount: "$100", total: "$4240" },
+          illustration: require("../../../assets/img/flight/Boe737.jpg"),
+          options: [
+            { id: 0, title: "Book Flight", action: "flight/booking" },
+            { id: 1, title: "Contact Carrier", action: "flight/contact" },
+          ],
+        },
+      ],
+    };
+  } else if (params.action === "demo/booking" || params.text.toLowerCase() === "booking") {
+    responseObject = {
+      type: "template",
+      slides: [
+        {
+          id: 0,
+          templateType: "template-booking",
+          headerTitle: "Booking Number",
+          headerValue: "A274872",
+          cargoDetails: [
+            { param: "Dairy products", value: "2000Kg" },
+            { param: "Clothings", value: "500Kg" },
+            { param: "Machinery", value: "1000Kg" },
+          ],
+          cargoRoutes: [
+            {
+              flight: "TL0641",
+              type: "Non-Stop",
+              departure: "Osaka(ITM)",
+              arrival: "NewYork(JFK)",
+              departs: "Wed, Mar 30 10:00PM",
+              arrives: "Thu, Mar 31 8:00PM",
+            },
+          ],
+          cargoPricing: { shipping: "$4000", tax: "$340", discount: "- $100", total: "$4240" },
+          illustration: require("../../../assets/img/flight/Boe737.jpg"),
+          options: [{ id: 0, title: "Show Full Receipt", action: "phone/bookingdetails" }],
+        },
+      ],
+    };
+  } else if (params.action === "demo/status" || params.text.toLowerCase() === "status") {
+    responseObject = {
+      type: "template",
+      slides: [
+        {
+          id: 0,
+          templateType: "template-status",
+          headerTitle: "Flight Status",
+          headerValue: "DELAYED",
+          bookingNumber: "F2824793",
+          cargoRoutes: [
+            {
+              flight: "TL0641",
+              type: "Non-Stop",
+              departure: "Osaka(ITM)",
+              arrival: "NewYork(JFK)",
+              departs: "10:00PM",
+              arrives: "8:00PM",
+            },
+          ],
+          illustration: require("../../../assets/img/flight/Boe737.jpg"),
+          options: [{ id: 0, title: "Contact Carrier", action: "flight/contact" }],
+        },
+      ],
+    };
+  } else if (params.text.toLowerCase() === "demo" || params.action === "demo/functions") {
+    responseObject = {
+      type: "opts",
+      text: "",
+      options: [
+        { id: 0, title: "Pics Sample", action: "demo/pics" },
+        { id: 1, title: "Sequence Sample", action: "demo/sequ" },
+        { id: 3, title: "Carousel Sample", action: "demo/carousel" },
+        { id: 4, title: "Availability Sample", action: "demo/avail" },
+        { id: 5, title: "Options Sample", action: "demo/opts" },
+        { id: 6, title: "Booking Sample", action: "demo/booking" },
+        { id: 7, title: "Status Sample", action: "demo/status" },
+      ],
+    };
   }
   let chatPromise = new Promise((resolve, reject) => {
     // We call resolve(...) when what we were doing asynchronously was successful, and reject(...) when it failed.

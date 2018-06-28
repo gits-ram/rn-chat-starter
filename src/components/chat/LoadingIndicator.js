@@ -1,6 +1,7 @@
 import React from "react";
 import { Animated, View } from "react-native";
 import Spinner from "react-native-spinkit";
+import Constants from "../../global/constants";
 
 const ANIMATION_DURATION = 200;
 
@@ -38,7 +39,7 @@ export default class LoadingIndicator extends React.PureComponent {
           isVisible={true}
           size={50}
           type={this.loaderStyle[this.currentStyle]}
-          color={"#333333"}
+          color={Constants.Colors.darkAccent}
         />
       </View>
       // </Animated.View>
@@ -50,7 +51,7 @@ const styles = {
   mainContainer: {
     flex: 1,
     flexDirection: "row",
-    marginLeft: 15,
+    marginLeft: 5,
     width: "20%",
     alignItems: "flex-start",
     justifyContent: "flex-start",

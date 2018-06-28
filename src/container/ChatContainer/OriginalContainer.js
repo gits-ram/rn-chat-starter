@@ -27,6 +27,41 @@ const dummyImages = [
   "http://fujifilm.com.ph/Products/digital_cameras/x/fujifilm_x20/sample_images/img/index/ff_x20_008.JPG",
 ];
 
+const welcomeMessage = [
+  {
+    type: "txt",
+    text: "Hello there, " + greetMsg(),
+  },
+  {
+    type: "txt",
+    text: "I'm your virtual assistant. I can help you make cargo bookings.",
+  },
+  {
+    type: "txt",
+    text: "You can either chat or speak to me using the input bar below.",
+  },
+  {
+    type: "txt",
+    text: "Would you like to see some recommendations on what I can do? If so, press YES!",
+    options: [{ title: "Yes", action: "demo/functions" }],
+  },
+];
+
+function greetMsg() {
+  let msg = "";
+  let d = new Date(),
+    h = d.getHours();
+
+  if (h > 5 && h < 12) {
+    msg = "good morning!";
+  } else if (h >= 12 && h < 15) {
+    msg = "good afternoon!";
+  } else {
+    msg = "good evening!";
+  }
+  return msg;
+}
+
 @inject("chatStore", "chatViewStore")
 @observer
 export default class OriginalContainer extends React.Component<Props, State> {
@@ -89,6 +124,8 @@ export default class OriginalContainer extends React.Component<Props, State> {
       },
       true,
     );
+
+    this.fireWelcomeMessages();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -101,6 +138,39 @@ export default class OriginalContainer extends React.Component<Props, State> {
 
   //React-Native-Navigation handler for drawer etc.,
   onNavigatorEvent = (event: {}) => {};
+
+  fireWelcomeMessages() {
+    for (let i = 0; i < welcomeMessage.length; i++) {
+      setTimeout(() => {
+        let type = welcomeMessage[i].type;
+        let text = welcomeMessage[i].text;
+        let options = welcomeMessage[i].options;
+        let slides = welcomeMessage[i].slides;
+        let imageUrl = welcomeMessage[i].imageUrl;
+        let showIcon = false;
+        let replaceFirstInd = false;
+        let animate = 1;
+        if (i === 0) {
+          showIcon = true;
+          animate = 1; //fadeInLeft
+        } else {
+          animate = 2; //fadeInDown
+        }
+
+        chatStore.createResponseChat(
+          replaceFirstInd,
+          type,
+          text,
+          options,
+          imageUrl,
+          "",
+          showIcon,
+          animate,
+          slides,
+        );
+      }, i * 700);
+    }
+  }
 
   _checkPermission() {
     if (Platform.OS !== "android") {
@@ -126,7 +196,8 @@ export default class OriginalContainer extends React.Component<Props, State> {
     let replace =
       this.props.chatStore.chatList &&
       this.props.chatStore.chatList.length > 0 &&
-      this.props.chatStore.chatList[0].type === "opts";
+      this.props.chatStore.chatList[0].type === "opts" &&
+      (action && action.substring(0, 4)) !== "demo"; //Dont replace Demo Option list
     chatStore.createUserChat(replace ? true : false, ipText, replace ? 2 : 1);
     chatStore.contactAiApi(ipText, action);
 
@@ -254,7 +325,6 @@ export default class OriginalContainer extends React.Component<Props, State> {
   }
 
   render() {
-    const { chatStore } = this.props;
     let chatList = this.props.chatStore.chatList.toJS();
     return (
       // <View style={{ flex: 1 }}>

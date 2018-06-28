@@ -61,14 +61,14 @@ export default class AudioBlob extends React.Component {
                 onPress={() => {
                   this.props.playSound(this.props.id, this.props.audioPath);
                 }}>
-                <Icon name={"play-circle"} color={Constants.Colors.primaryAccent} size={45} />
+                <Icon name={"play-circle"} color={Constants.Colors.chatPrimaryAccent} size={45} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
                 onPress={() => {
                   this.props.stopSound();
                 }}>
-                <Icon name={"stop-circle"} color={Constants.Colors.primaryAccent} size={45} />
+                <Icon name={"stop-circle"} color={Constants.Colors.chatPrimaryAccent} size={45} />
               </TouchableOpacity>
             )}
             {/* </Body> */}

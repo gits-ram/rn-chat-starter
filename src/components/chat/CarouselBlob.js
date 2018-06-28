@@ -88,7 +88,7 @@ export default class CarouselBlob extends React.Component<Props, State> {
           inactiveSlideScale={0.95}
           inactiveSlideOpacity={1}
           enableMomentum={true}
-          activeSlideAlignment={"start"}
+          // activeSlideAlignment={"start"} //left-aligned
           containerCustomStyle={styles.slider}
           contentContainerCustomStyle={styles.sliderContentContainer}
           activeAnimationType={"spring"}
@@ -178,7 +178,7 @@ const generateOptions = (options, chatAction) => {
             chatAction(title, action);
           }}>
           <View>
-            <Text style={{ fontWeight: "bold", color: Constants.Colors.links, fontSize: 16 }}>
+            <Text style={{ fontWeight: "bold", color: Constants.Colors.chatOptions, fontSize: 16 }}>
               {title}
             </Text>
           </View>
@@ -254,14 +254,14 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 0, //entryBorderRadius,
   },
   title: {
-    color: Constants.Colors.darkAccent,
+    color: Constants.Colors.chatDarkAccent,
     fontSize: 16,
     fontWeight: "bold",
     letterSpacing: 0.5,
   },
   subtitle: {
     marginTop: 1,
-    color: Constants.Colors.darkAccent,
+    color: Constants.Colors.chatDarkAccent,
     fontSize: 14,
     fontStyle: "italic",
   },
