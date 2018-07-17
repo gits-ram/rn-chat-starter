@@ -27,25 +27,31 @@ import com.zmxv.RNSound.RNSoundPackage;
 import com.rnfs.RNFSPackage;
 //React Native Camera
 import org.reactnative.camera.RNCameraPackage;
+//React Native SVG
+import com.horcrux.svg.SvgPackage;
+//React native Maps
+import com.airbnb.android.react.maps.MapsPackage;
 
 public class MainApplication extends NavigationApplication {
 
-  //  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-  //    @Override
-  //    public boolean getUseDeveloperSupport() {
-  //      return BuildConfig.DEBUG;
-  //    }
-  //}
+  // private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+  // @Override
+  // public boolean getUseDeveloperSupport() {
+  // return BuildConfig.DEBUG;
+  // }
+  // }
 
-  //    @Override
+  // @Override
   protected List<ReactPackage> getPackages() {
-    return Arrays.<ReactPackage>asList(/*new MainReactPackage(),*/ new VectorIconsPackage(),
-        new RCTSplashScreenPackage(), //splash screen module
-        new RNSpinkitPackage(), //Spinner Animation
-        new ReactNativeAudioPackage(), //Audio Recorder
-        new RNSoundPackage(), //Sound Playback
+    return Arrays.<ReactPackage>asList(/* new MainReactPackage(), */ new VectorIconsPackage(),
+        new RCTSplashScreenPackage(), // splash screen module
+        new RNSpinkitPackage(), // Spinner Animation
+        new ReactNativeAudioPackage(), // Audio Recorder
+        new RNSoundPackage(), // Sound Playback
         new RNFSPackage(), // File System
-             new RNCameraPackage() //Camera
+        new RNCameraPackage(), // Camera
+        new SvgPackage(), // SVG
+        new MapsPackage()  //Maps
     );
   }
 

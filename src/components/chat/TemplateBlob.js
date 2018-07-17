@@ -60,7 +60,7 @@ export interface State {
   _carouselRef: React.Component<Carousel>;
 }
 
-export default class TemplatelBlob extends React.Component<Props, State> {
+export default class TemplateBlob extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -73,7 +73,8 @@ export default class TemplatelBlob extends React.Component<Props, State> {
       if (this.props.animate === 1) {
         this._viewRef.fadeInLeft(700);
       } else if (this.props.animate === 2) {
-        this._viewRef.fadeInDown(500);
+        this._viewRef.fadeInLeft(700);
+        // this._viewRef.fadeInDown(700);
       }
     }
   }
@@ -90,7 +91,7 @@ export default class TemplatelBlob extends React.Component<Props, State> {
   }
 
   render() {
-    const { options, chatAction, showIcon } = this.props;
+    const { slidesList, showIcon } = this.props;
 
     return (
       <AnimView
@@ -99,23 +100,23 @@ export default class TemplatelBlob extends React.Component<Props, State> {
           this._viewRef = ref;
         }}
         style={{
-          flexDirection: this.props.slidesList.length > 1 ? "column" : "row",
+          flexDirection: slidesList.length > 1 ? "column" : "row",
           flex: 1,
           paddingBottom: 5,
         }}>
-        {this.props.slidesList.length < 2 ? (
+        {slidesList.length < 2 ? (
           <View style={styles.aiIconView}>
             {showIcon === true ? (
               <Icon name={"plane-shield"} color={Constants.Colors.chatPrimaryAccent} size={42} />
             ) : null}
           </View>
         ) : null}
-        <View style={{ flex: 1, marginLeft: this.props.slidesList.length > 1 ? 0 : -40 }}>
+        <View style={{ flex: 1, marginLeft: slidesList.length > 1 ? 0 : -40 }}>
           <Carousel
             //Here, pushing the ref into state and then reading from state into the other child(pagination).
             // Note: without the !this.state.one this will cause an infinite loop.
             ref={c => !this.state._carouselRef && this.setState({ _carouselRef: c })}
-            data={this.props.slidesList.toJS()}
+            data={slidesList.toJS()}
             renderItem={this._renderSlide.bind(this)}
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
@@ -135,7 +136,7 @@ export default class TemplatelBlob extends React.Component<Props, State> {
           />
           {this.props.pagination ? (
             <Pagination
-              dotsLength={this.props.slidesList.toJS().length}
+              dotsLength={slidesList.toJS().length}
               activeDotIndex={this.state.currentSlide}
               containerStyle={styles.paginationContainer}
               dotColor={"rgba(13, 109, 229, 0.95)"}
@@ -314,26 +315,22 @@ const generateCargoDetails = data => {
       let value = data[ind].value;
       renderVal.push(
         <View key={ind} style={{ flexDirection: "row", flex: 1, justifyContent: "space-between" }}>
-          <Text
-            style={{
-              color: "white",
-              fontWeight: "bold",
-              marginLeft: 15,
-              fontSize: boldFontSize,
-              paddingVertical: 2,
-            }}>
-            {param}
-          </Text>
-          <Text
-            style={{
-              color: "white",
-              fontWeight: "bold",
-              marginRight: 15,
-              fontSize: boldFontSize,
-              paddingVertical: 2,
-            }}>
-            {value}
-          </Text>
+          <View style={{ flex: 0.5, alignItems: "flex-start" }}>
+            <Text
+              ellipsizeMode="tail"
+              numberOfLines={1}
+              style={[{ flex: 1, marginLeft: 10 }, styles.cargoDetailsText]}>
+              {param}
+            </Text>
+          </View>
+          <View style={{ flex: 0.5, alignItems: "flex-end" }}>
+            <Text
+              ellipsizeMode="tail"
+              numberOfLines={1}
+              style={[{ flex: 1, marginRight: 10 }, styles.cargoDetailsText]}>
+              {value}
+            </Text>
+          </View>
         </View>,
       );
     }
@@ -567,9 +564,8 @@ const generateOptions = (item, chatAction) => {
 const styles = StyleSheet.create({
   aiIconView: {
     flex: 0.15,
-    alignSelf: "flex-end",
+    alignSelf: "flex-start",
     alignItems: "center",
-    marginBottom: 5,
   },
   slider: {
     // marginTop: 5,
@@ -671,70 +667,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     // marginHorizontal: 8,
   },
+  cargoDetailsText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: boldFontSize,
+    paddingVertical: 2,
+  },
 });
-
-// export const FLIGHT_DATA = {
-//   type: "carousel",
-//   slides: [
-//     {
-//       id: 0,
-//       title: "Boeing 737",
-//       subtitle: "First flight	 April 9, 1967",
-//       illustration: require("../../../assets/img/flight/Boe737.jpg"),
-//       options: [
-//         { id: 0, title: "Book Flight Seat", action: "flight/booking" },
-//         { id: 1, title: "Ship Cargo Via Carrier", action: "flight/cargobooking" },
-//       ],
-//     },
-//     {
-//       id: 1,
-//       title: "Boeing 747",
-//       subtitle: "First flight  February 9, 1969",
-//       illustration: require("../../../assets/img/flight/Boe747.jpg"),
-//       options: [
-//         { id: 0, title: "Book Flight", action: "flight/booking" },
-//         { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
-//       ],
-//     },
-//     {
-//       id: 2,
-//       title: "Boeing 757",
-//       subtitle: "First flight	 February 19, 1982",
-//       illustration: require("../../../assets/img/flight/Boe757.jpg"),
-//       options: [
-//         { id: 0, title: "Book Flight Seats", action: "flight/booking" },
-//         { id: 1, title: "Ship Cargo Via Carrier", action: "flight/cargobooking" },
-//       ],
-//     },
-//     {
-//       id: 3,
-//       title: "Boeing 767",
-//       subtitle: "First flight	 September 26, 1984",
-//       illustration: require("../../../assets/img/flight/Boe767.jpg"),
-//       options: [
-//         { id: 0, title: "Book Flight", action: "flight/booking" },
-//         { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
-//       ],
-//     },
-//     {
-//       id: 4,
-//       title: "Boeing 777",
-//       subtitle: "First flight	 June 12, 1994",
-//       illustration: require("../../../assets/img/flight/Boe777.jpg"),
-//       options: [
-//         { id: 0, title: "Book Seats", action: "flight/booking" },
-//         { id: 1, title: "Ship Cargo", action: "flight/cargobooking" },
-//       ],
-//     },
-//     {
-//       id: 5,
-//       title: "Boeing 787",
-//       subtitle: "First flight	 December 15, 2009",
-//       illustration: require("../../../assets/img/flight/Boe787.jpg"),
-//       options: [
-//         { id: 0, title: "Book Flight Seats", action: "flight/booking" },
-//         { id: 1, title: "Ship Cargo Via Carrier", action: "flight/cargobooking" },
-//       ],
-//     },
-//   ],
-// };

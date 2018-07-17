@@ -39,7 +39,7 @@ export default class LoadingIndicator extends React.PureComponent {
           isVisible={true}
           size={50}
           type={this.loaderStyle[this.currentStyle]}
-          color={Constants.Colors.darkAccent}
+          color={Constants.Colors.chatDarkAccent}
         />
       </View>
       // </Animated.View>

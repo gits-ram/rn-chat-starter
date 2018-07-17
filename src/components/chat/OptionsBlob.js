@@ -24,7 +24,8 @@ class OptionsBlob extends React.PureComponent<Props, State> {
       if (this.props.animate === 1) {
         this._viewRef.fadeInLeft(700);
       } else if (this.props.animate === 2) {
-        this._viewRef.fadeInDown(500);
+        this._viewRef.fadeInLeft(700);
+        // this._viewRef.fadeInDown(700);
       }
     }
   }
@@ -60,6 +61,7 @@ class OptionsBlob extends React.PureComponent<Props, State> {
             this.listRef = ref;
           }}
           horizontal={true}
+          showsHorizontalScrollIndicator={false}
           style={{ width: "100%" }}
           renderItem={({ item }) => this._renderItem(item, chatAction)}
           keyExtractor={item => "" + item.id}

@@ -168,6 +168,26 @@ class Dashboard extends React.Component<Props, State> {
               backgroundColor: Constants.Colors.primaryAccent,
             }}
             onPress={() => {
+              this.props.navigator.showModal({
+                screen: Constants.Screens.MAPS.screen,
+                title: Constants.Screens.MAPS.title,
+              });
+            }}>
+            <Text style={{ color: "#FFF" }}> Show Maps </Text>
+          </Button>
+
+          <View style={{ padding: 10 }} />
+
+          <Button
+            style={{
+              // elevation: 0,
+              alignSelf: "center",
+              justifyContent: "center",
+              width: "45%",
+              height: 40,
+              backgroundColor: Constants.Colors.primaryAccent,
+            }}
+            onPress={() => {
               this.setState({ _showFab: !this.state._showFab });
             }}>
             <Text style={{ color: "#FFF" }}> Toggle FAB </Text>

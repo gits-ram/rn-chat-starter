@@ -10,7 +10,7 @@ export default class SplashContainer extends React.Component<Props, State> {
   componentDidMount() {
     setTimeout(() => {
       Constants.Global.openChatAsDedicatedApp();
-    }, 200);
+    }, 200); //delay
   }
 
   render() {

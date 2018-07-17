@@ -35,6 +35,9 @@ local.properties
 *.iml
 *.jks
 
+# api keys
+API_KEYS.js
+
 # node.js
 #
 node_modules/

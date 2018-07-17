@@ -24,7 +24,7 @@ export default class ChatStore {
     this.fetchingApi = true;
     //Insert Loading Indicator as a Chat Entity and Remove it once response is received
     setTimeout(() => {
-      this.createResponseChat(false, "txt", "loading..", null, null, null, true, 1);
+      this.createResponseChat(false, "txt", "loading..", null, null, null, null, true, 1);
       // this.createResponseChat("loader", "", null, null);
     }, 300);
 
@@ -49,6 +49,7 @@ export default class ChatStore {
             for (ind; ind < response.length; ind++) {
               let type = response[ind].type;
               let text = response[ind].text;
+              let action = response[ind].action;
               let options = response[ind].options;
               let slides = response[ind].slides;
               let imageUrl = response[ind].imageUrl;
@@ -68,6 +69,7 @@ export default class ChatStore {
                   replaceFirstInd,
                   type,
                   text,
+                  action,
                   options,
                   imageUrl,
                   "",
@@ -82,6 +84,7 @@ export default class ChatStore {
               true, //repace first index (which is the loader indicator)
               response.type,
               response.text,
+              response.action,
               response.options,
               response.imageUrl,
               "",
@@ -170,7 +173,7 @@ export default class ChatStore {
   }
 
   //Currently stubbed to give dummy responses
-  createResponseChat(replaceFirstInd, type, ipTxt, opts, imageUrl, URL, showIc, animType, slide) {
+  createResponseChat(replaceFirstInd, type, txt, act, opts, imgUrl, URL, showIc, animType, slide) {
     let index = 0;
     if (replaceFirstInd) {
       index = this.chatList.length - 1;
@@ -186,8 +189,9 @@ export default class ChatStore {
       type: type,
       position: "left",
       title: "AI",
-      text: ipTxt,
-      imgUrl: imageUrl,
+      text: txt,
+      action: act,
+      imgUrl: imgUrl,
       url: URL,
       subText: "dummy",
       options: opts,

@@ -9,6 +9,8 @@ import OptionsBlob from "../../components/chat/OptionsBlob";
 import AudioBlob from "../../components/chat/AudioBlob";
 import CarouselBlob from "../../components/chat/CarouselBlob";
 import TemplateBlob from "../../components/chat/TemplateBlob";
+import WeatherBlob from "../../components/chat/WeatherBlob";
+import MapBlob from "../../components/chat/MapBlob";
 
 export interface State {}
 export interface Props {}
@@ -51,9 +53,15 @@ export default class ChatList extends React.Component<Props, State> {
     // LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
   }
 
-  _renderChatItem(itm, indx) {
+  _renderChatItem(itm, indx, length) {
     let item = itm;
     let tempAnim = item.animate;
+
+    if (item.action && item.action.length > 0 && tempAnim) {
+      if (item.action === "phone/blinkmic") {
+        this.props.receiveChatAction("", item.action);
+      }
+    }
 
     //Turn Animation state/type to 0, as we have animated once
     this.props.chatAnimate(indx, 0);
@@ -148,6 +156,26 @@ export default class ChatList extends React.Component<Props, State> {
                 showIcon={item.showIcon}
               />
             );
+
+          case "weather":
+            return (
+              <WeatherBlob
+                slidesList={item.slides}
+                chatAction={this.props.receiveChatAction.bind(this)}
+                animate={tempAnim}
+                showIcon={item.showIcon}
+              />
+            );
+
+          case "map":
+            return (
+              <MapBlob
+                data={item.slides}
+                chatAction={this.props.receiveChatAction.bind(this)}
+                showIcon={item.showIcon}
+                animate={tempAnim !== false ? tempAnim : 1}
+              />
+            );
         }
     }
   }
@@ -162,7 +190,11 @@ export default class ChatList extends React.Component<Props, State> {
           }}
           style={{ width: "100%" }}
           renderItem={({ item, index }) => {
-            return <Observer>{() => this._renderChatItem(item, index)}</Observer>;
+            return (
+              <Observer>
+                {() => this._renderChatItem(item, index, this.props.chatList.length)}
+              </Observer>
+            );
           }}
           keyExtractor={item => "" + item.id}
           // initialScrollIndex = {this.state.initialScrollIndex}

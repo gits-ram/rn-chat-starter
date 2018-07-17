@@ -182,6 +182,8 @@ dependencies {
     implementation (project(':react-native-camera')) { //RN Camera
         exclude group: "com.android.support"
     }
+    implementation project(':react-native-svg') // RN SVG Library
+    implementation project(':react-native-maps') //RN Google Maps Library
     implementation "com.android.support:exifinterface:$rootProject.supportLibVersion"
     implementation "com.android.support:support-annotations:$rootProject.supportLibVersion"
     implementation "com.android.support:support-v4:$rootProject.supportLibVersion"

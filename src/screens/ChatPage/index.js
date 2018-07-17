@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  TextInput,
 } from "react-native";
 import { Observer, inject, observer } from "mobx-react/native";
 import { View as AnimView, Text as AnimText } from "react-native-animatable";
@@ -18,9 +17,6 @@ import styles from "./styles";
 import ChatList from "./ChatList";
 import Constants from "../../global/constants";
 import ImagePreviewer from "../../components/SingleImagePreviewer";
-import TemplateFullView from "../../components/chat/TemplateFullView";
-import { DatePickerDialog } from "../../components/datepickerdialog";
-import moment from "moment";
 
 export interface Props {
   navigator: any;
@@ -93,47 +89,62 @@ class ChatPage extends React.Component<Props, State> {
   }
 
   _receiveChatAction(inputData, action) {
-    if (action === "phone/imgPreview") {
-      chatView.imageToPreview = inputData;
-    } else if (action === "phone/datepicker") {
-      this.invokeDatePickerDialog();
-    } else if (action === "phone/bookingdetails") {
-      this.props.navigator.push({
-        screen: Constants.Screens.TEMPLATEBLOBFV.screen,
-        title: "Booking Details",
-        navigatorStyle: {
-          navBarButtonColor: Constants.Colors.white,
-          navBarTextColor: Constants.Colors.white,
-          navigationBarColor: Constants.Colors.black,
-          navBarBackgroundColor: Constants.Colors.chatPrimaryAccent,
-          statusBarColor: Constants.Colors.chatDarkAccent,
-          tabFontFamily: "Roboto",
-        },
-        passProps: {
-          slideData: inputData,
-        },
-      });
+    //Moved to container!
+    // if (action === "phone/imgPreview") {
+    //   chatView.imageToPreview = inputData;
+    // } else if (action === "phone/mapView") {
+    //   this.props.navigator.showModal({
+    //     screen: Constants.Screens.MAPS.screen,
+    //     title: "SFO to AMS",
+    //     navigatorStyle: {
+    //       navBarButtonColor: Constants.Colors.white,
+    //       navBarTextColor: Constants.Colors.white,
+    //       navigationBarColor: Constants.Colors.black,
+    //       navBarBackgroundColor: Constants.Colors.chatPrimaryAccent,
+    //       statusBarColor: Constants.Colors.chatDarkAccent,
+    //       tabFontFamily: "Roboto",
+    //     },
+    //   });
+    // } else if (action === "phone/datepicker") {
+    //   this.invokeDatePickerDialog();
+    // } else if (action === "phone/contact") {
+    //   Linking.canOpenURL("tel:+919988776655")
+    //     .then(supported => {
+    //       if (!supported) {
+    //         console.log("Can't handle url: " + "url");
+    //       } else {
+    //         return Linking.openURL("tel:+919988776655");
+    //       }
+    //     })
+    //     .catch(err => console.error("An error occurred", err));
+    // } else if (action === "phone/bookingdetails") {
+    //   this.props.navigator.push({
+    //     screen: Constants.Screens.TEMPLATEBLOBFV.screen,
+    //     title: "Booking Details",
+    //     navigatorStyle: {
+    //       navBarButtonColor: Constants.Colors.white,
+    //       navBarTextColor: Constants.Colors.white,
+    //       navigationBarColor: Constants.Colors.black,
+    //       navBarBackgroundColor: Constants.Colors.chatPrimaryAccent,
+    //       statusBarColor: Constants.Colors.chatDarkAccent,
+    //       tabFontFamily: "Roboto",
+    //     },
+    //     passProps: {
+    //       slideData: inputData,
+    //     },
+    //   });
+    // } else {
+    // this.props.sendPressed(inputData, action);
+    // }
+
+    if (action === "phone/blinkmic") {
+      setTimeout(() => {
+        this._micRef.swing(2000);
+      }, 500);
     } else {
       this.props.sendPressed(inputData, action);
     }
   }
-
-  // invoke DatePickerDialog
-  invokeDatePickerDialog = () => {
-    let date = new Date();
-
-    //To open the dialog
-    this.dateDialog.open({
-      date: date,
-      maxDate: new Date(), //To restrict future date
-    });
-  };
-
-  // Call back for date Dialog picked event
-  onDatePicked = date => {
-    // console.warn(moment(date).format("DD-MMM-YYYY"));
-    this.props.sendPressed(moment(date).format("DD-MMM-YYYY"), "booking/flight=city?date");
-  };
 
   _sendChat() {
     if (chatView.inputString !== "") {
@@ -349,17 +360,6 @@ class ChatPage extends React.Component<Props, State> {
   // )}
   // </AnimView>
 
-  _renderDateDialog() {
-    return (
-      <DatePickerDialog
-        ref={ref => {
-          this.dateDialog = ref;
-        }}
-        onDatePicked={this.onDatePicked.bind(this)}
-      />
-    );
-  }
-
   _renderImagePreview() {
     return (
       <View
@@ -420,7 +420,6 @@ class ChatPage extends React.Component<Props, State> {
         this.props.chatViewStore.imageToPreview.length > 0
           ? this._renderImagePreview()
           : this._renderCoreUI(param)}
-        {this._renderDateDialog()}
       </View>
     );
   }

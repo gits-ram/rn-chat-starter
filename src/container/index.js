@@ -34,6 +34,8 @@ import CollapsibleFlatList from "../components/AnimatedHeaderFlatList";
 import Modal from "../screens/Dashboard/Modal";
 import JwtTestPage from "../screens/Dashboard/JwtTestPage";
 
+import AnimatedNavigation from "../components/maps/AnimatedNavigation";
+
 /** Register All Containers/Screens to
  * React-Native-Navigation Library
  */
@@ -44,6 +46,10 @@ export function registerScreens(store, provider) {
   );
   Navigation.registerComponent(Constants.Screens.REGISTER.screen, () =>
     wrapProvider(Register, store, false),
+  );
+
+  Navigation.registerComponent(Constants.Screens.MAPS.screen, () =>
+    wrapProvider(AnimatedNavigation, store, false),
   );
 
   Navigation.registerComponent(Constants.Screens.DRAWER.screen, () =>
