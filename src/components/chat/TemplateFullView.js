@@ -4,9 +4,7 @@ import {
   Text,
   View,
   Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-  Platform,
+  BackHandler,
   ScrollView,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -28,10 +26,6 @@ function wp(percentage) {
   const value = percentage * viewportWidth / 100;
   return Math.round(value);
 }
-function hp(percentage) {
-  const value = percentage * viewportHeight / 100;
-  return Math.round(value);
-}
 
 export interface props {
   slideData: object;
@@ -42,7 +36,32 @@ export default class TemplateFullView extends React.Component<Props, State> {
     if (this._viewRef) {
       this._viewRef.fadeInUp(500);
     }
+
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
+
+  onNavigatorEvent(event) {
+    switch (event.id) {
+      case "willAppear":
+        this.backHandler = BackHandler.addEventListener("hardwareBackPress", this.handleBackPress);
+        break;
+      case "willDisappear":
+        this.backHandler.remove();
+        break;
+      case "backPress":
+        this.handleBackPress();
+        break;
+      default:
+        break;
+    }
+  }
+
+  handleBackPress = () => {
+    this._viewRef.fadeOutDown(200).then(() => {
+      this.props.navigator.pop({ animated: true });
+    });
+  }
+
   render() {
     const { slideData } = this.props;
 

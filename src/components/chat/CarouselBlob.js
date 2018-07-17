@@ -52,7 +52,8 @@ export default class CarouselBlob extends React.Component<Props, State> {
       if (this.props.animate === 1) {
         this._viewRef.fadeInLeft(700);
       } else if (this.props.animate === 2) {
-        this._viewRef.fadeInDown(500);
+        this._viewRef.fadeInLeft(700);
+        // this._viewRef.fadeInDown(700);
       }
     }
   }

@@ -30,16 +30,18 @@
     "react-native-animatable": "^1.2.4",
     "react-native-audio": "^4.0.0",
     "react-native-autocomplete-input": "^3.5.0",
+    "react-native-camera": "1.1.2",
     "react-native-fs": "^2.9.11",
     "react-native-largelist": "^1.2.8",
+    "react-native-maps": "https://github.com/airbnb/react-native-maps/tarball/master",
     "react-native-navigation": "1.1.431",
     "react-native-smart-splash-screen": "^2.3.5",
     "react-native-snap-carousel": "^3.7.0",
     "react-native-sound": "^0.10.9",
     "react-native-spinkit": "^1.1.1",
+    "react-native-svg": "^6.3.1",
     "react-native-vector-icons": "^4.5.0",
-    "react-navigation": "1.5.0",
-    "react-native-camera": "1.1.2"
+    "react-navigation": "1.5.0"
   },
   "devDependencies": {
     "babel-eslint": "8.1.0",

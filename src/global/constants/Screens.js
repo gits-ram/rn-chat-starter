@@ -89,6 +89,10 @@ export default {
     screen: "afls.jwttest",
     title: "Jwt Test Page",
   },
+  MAPS: {
+    screen: "afls.maps",
+    title: "Google Maps",
+  },
 
   //// POPUP & REUSABLE COMPONENTS ////
   NOTIFICATION: {

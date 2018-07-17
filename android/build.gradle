@@ -2,25 +2,29 @@
 
 buildscript {
     repositories {
-        jcenter()
         google()
+        jcenter()
+        maven {                                                                                     
+            url "https://jitpack.io"
+        }  
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-
+        classpath 'com.android.tools.build:gradle:3.1.0'
+    
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        classpath 'com.google.gms:google-services:3.1.1'
     }
 }
 
 allprojects {
     repositories {
+        google()
         mavenLocal()
         jcenter()
-        google()
         maven {                                                                                     
-           url "https://jitpack.io"                                                                 
-        }   
+           url "https://jitpack.io"
+        }
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url "$rootDir/../node_modules/react-native/android"
@@ -35,8 +39,9 @@ ext {
     compileSdkVersion           = 27
     targetSdkVersion            = 27
     buildToolsVersion           = "27.0.3"
-    googlePlayServicesVersion   = "15.0.2"
+    googlePlayServicesVersion   = "15.0.1"
     supportLibVersion           = "27.1.1"
+    androidMapsUtilsVersion     = "0.5+"
 }
 
 configurations.all {

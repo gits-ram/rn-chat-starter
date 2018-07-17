@@ -31,9 +31,9 @@ export default class ImageBlob extends React.PureComponent {
     //Animate Imageblob Entrance
     if (this._viewRef) {
       if (this.props.animate === 1) {
-        this._viewRef.fadeIn(500);
+        this._viewRef.fadeIn(700);
       } else if (this.props.animate === 2) {
-        this._viewRef.fadeInDown(600);
+        this._viewRef.fadeInDown(700);
       }
     }
   }
@@ -177,8 +177,9 @@ const styles = {
   },
   aiIconView: {
     flex: 0.15,
-    alignSelf: "flex-end",
+    alignSelf: "flex-start",
     alignItems: "center",
+    marginTop : 5
   },
   aiImageView: {
     flex: 0.7, //0.8 if the box should stetch to far right end of screen

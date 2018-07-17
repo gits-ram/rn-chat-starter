@@ -26,9 +26,9 @@ class TextBlob extends React.PureComponent<Props, State> {
     //Animate AI Text Input Entrance
     if (this._aiViewRef) {
       if (this.props.animate === 1) {
-        this._aiViewRef.fadeInLeft(400);
+        this._aiViewRef.fadeInLeft(600);
       } else if (this.props.animate === 2) {
-        this._aiViewRef.fadeInDown(300);
+        this._aiViewRef.fadeInDown(800);
       }
     }
 
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   userIconView: {
     flex: 0.15,
-    alignSelf: "flex-end",
+    alignSelf: "flex-start",
     alignItems: "center",
   },
   userTextView: {
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   },
   aiIconView: {
     flex: 0.15,
-    alignSelf: "flex-end",
+    alignSelf: "flex-start",
     alignItems: "center",
   },
   aiTextView: {

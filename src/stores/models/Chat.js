@@ -7,6 +7,7 @@ export default class ChatModel {
   @observable position; //User-Right //Response-Left
   @observable title;
   @observable text;
+  @observable action;
   @observable imgUrl;
   @observable url;
   @observable subText;
@@ -24,6 +25,7 @@ export default class ChatModel {
     this.position = obj.position;
     this.title = obj.title;
     this.text = obj.text;
+    this.action = obj.action;
     this.imgUrl = obj.imgUrl;
     this.url = obj.url;
     this.subText = obj.subText;

@@ -2,11 +2,14 @@
 import * as React from "react";
 import { observer, inject } from "mobx-react/native";
 // import { observer } from "mobx-react";
-import { PermissionsAndroid, Platform, LayoutAnimation } from "react-native";
+import { View, PermissionsAndroid, Platform, Linking } from "react-native";
 import ChatPage from "../../screens/ChatPage";
 import { AudioRecorder, AudioUtils } from "react-native-audio";
 import Sound from "react-native-sound";
 import * as FileUtil from "../../utils/FileStorageUtil";
+import { DatePickerDialog } from "../../components/datepickerdialog";
+import moment from "moment";
+import Constants from "../../global/constants";
 
 export interface Props {
   navigator: any;
@@ -17,16 +20,6 @@ let chatStore: Object;
 let chatView: Object;
 var sound: Sound;
 
-const dummyImages = [
-  "https://cnet1.cbsistatic.com/img/_QgPMW663-rUhx1Y3EWZ6n0RPG4=/936x527/2015/05/12/0bd24541-9769-4e4d-bf56-a5c4e60ad8bb/panasonic-fz1000-sample-photo-10.jpg",
-  "https://www.slrlounge.com/wp-content/uploads/2013/11/Nikon-D5300-Sample-Image-Night.jpg",
-  "https://www.gettyimages.co.nz/gi-resources/images/Embed/new/embed2.jpg",
-  "https://www.w3schools.com/w3images/lights.jpg",
-  "http://spayce.me/wp-content/uploads/2018/02/hawaii-wallpaper-hd-1920x1080-nature-landscape-tropical-island-beach-palm-trees-white-sand-sea-summer-clouds.jpg",
-  "https://static.motor.es/fotos-noticias/2017/09/min652x435/suzuki-swift-sport-2018-201739407_1.jpg",
-  "http://fujifilm.com.ph/Products/digital_cameras/x/fujifilm_x20/sample_images/img/index/ff_x20_008.JPG",
-];
-
 const welcomeMessage = [
   {
     type: "txt",
@@ -34,16 +27,12 @@ const welcomeMessage = [
   },
   {
     type: "txt",
-    text: "I'm your virtual assistant. I can help you make cargo bookings.",
+    text: "I'm Erica! How can I help you today?",
   },
   {
     type: "txt",
-    text: "You can either chat or speak to me using the input bar below.",
-  },
-  {
-    type: "txt",
-    text: "Would you like to see some recommendations on what I can do? If so, press YES!",
-    options: [{ title: "Yes", action: "demo/functions" }],
+    text: "If you want to see some recommendations, press Yes!",
+    options: [{ title: "Yes", action: "demo/functions" }, { title: "No", action: "demo/no" }],
   },
 ];
 
@@ -80,28 +69,6 @@ export default class OriginalContainer extends React.Component<Props, State> {
     //Init ChatViewStore Obj
     chatView = this.props.chatViewStore;
 
-    //Check Mic Record Permission for voice recording on Android
-    this._checkPermission().then(hasPermission => {
-      chatView.hasMicPermission = true;
-
-      if (!hasPermission) {
-        return;
-      }
-
-      // this.prepareRecordingPath(this.state.audioPath);
-
-      AudioRecorder.onProgress = data => {
-        chatView.updateRecordingTime(Math.floor(data.currentTime));
-      };
-
-      AudioRecorder.onFinished = data => {
-        // Android callback comes in the form of a promise instead.
-        if (Platform.OS === "ios") {
-          this._finishRecording(data.status === "OK", data.audioFileURL);
-        }
-      };
-    });
-
     //Create a Pvt Folder to save all chat voice recordings
     if (chatView.lastChatRecName === "1") {
       FileUtil.deleteFilePath(
@@ -125,7 +92,33 @@ export default class OriginalContainer extends React.Component<Props, State> {
       true,
     );
 
-    this.fireWelcomeMessages();
+    //Check Mic Record Permission for voice recording on Android
+    //Delay it a bit, to avoid crashes w.r.t activity not getting bound
+    setTimeout(() => {
+      this._checkPermission().then(hasPermission => {
+        chatView.hasMicPermission = true;
+
+        if (!hasPermission) {
+          return;
+        }
+
+        // this.prepareRecordingPath(this.state.audioPath);
+
+        AudioRecorder.onProgress = data => {
+          chatView.updateRecordingTime(Math.floor(data.currentTime));
+        };
+
+        AudioRecorder.onFinished = data => {
+          // Android callback comes in the form of a promise instead.
+          if (Platform.OS === "ios") {
+            this._finishRecording(data.status === "OK", data.audioFileURL);
+          }
+        };
+
+        //Welcome Chat Flow Trigger
+        this.fireWelcomeMessages();
+      });
+    }, 500);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -144,6 +137,7 @@ export default class OriginalContainer extends React.Component<Props, State> {
       setTimeout(() => {
         let type = welcomeMessage[i].type;
         let text = welcomeMessage[i].text;
+        let action = welcomeMessage[i].action;
         let options = welcomeMessage[i].options;
         let slides = welcomeMessage[i].slides;
         let imageUrl = welcomeMessage[i].imageUrl;
@@ -161,6 +155,7 @@ export default class OriginalContainer extends React.Component<Props, State> {
           replaceFirstInd,
           type,
           text,
+          action,
           options,
           imageUrl,
           "",
@@ -190,18 +185,81 @@ export default class OriginalContainer extends React.Component<Props, State> {
     );
   }
 
-  //Handle User Chat Input
-  _receiveUserIp(ipText, action) {
-    //If last chat type is opts, then replace when user chooses it
-    let replace =
-      this.props.chatStore.chatList &&
-      this.props.chatStore.chatList.length > 0 &&
-      this.props.chatStore.chatList[0].type === "opts" &&
-      (action && action.substring(0, 4)) !== "demo"; //Dont replace Demo Option list
-    chatStore.createUserChat(replace ? true : false, ipText, replace ? 2 : 1);
-    chatStore.contactAiApi(ipText, action);
+  // invoke DatePickerDialog
+  invokeDatePickerDialog = () => {
+    let date = new Date();
 
-    // console.log(JSON.stringify(chatStore.chatList));
+    //To open the dialog
+    this.dateDialog.open({
+      date: date,
+      maxDate: new Date(), //To restrict future date
+    });
+  };
+
+  // Call back for date Dialog picked event
+  onDatePicked = date => {
+    // console.warn(moment(date).format("DD-MMM-YYYY"));
+    this._receiveUserIp(moment(date).format("DD-MMM-YYYY"), "booking/flight=city?date");
+  };
+
+  //Handle User Chat Input and other actions
+  _receiveUserIp(inputData, action) {
+    if (action === "phone/imgPreview") {
+      chatView.imageToPreview = inputData;
+    } else if (action === "phone/mapView") {
+      this.props.navigator.showModal({
+        screen: Constants.Screens.MAPS.screen,
+        title: "SFO to AMS",
+        navigatorStyle: {
+          navBarButtonColor: Constants.Colors.white,
+          navBarTextColor: Constants.Colors.white,
+          navigationBarColor: Constants.Colors.black,
+          navBarBackgroundColor: Constants.Colors.chatPrimaryAccent,
+          statusBarColor: Constants.Colors.chatDarkAccent,
+          tabFontFamily: "Roboto",
+        },
+      });
+    } else if (action === "phone/datepicker") {
+      this.invokeDatePickerDialog();
+    } else if (action === "phone/contact") {
+      Linking.canOpenURL("tel:+919988776655")
+        .then(supported => {
+          if (!supported) {
+            console.log("Can't handle url: " + "url");
+          } else {
+            return Linking.openURL("tel:+919988776655");
+          }
+        })
+        .catch(err => console.error("An error occurred", err));
+    } else if (action === "phone/bookingdetails") {
+      this.props.navigator.push({
+        screen: Constants.Screens.TEMPLATEBLOBFV.screen,
+        title: "Booking Details",
+        navigatorStyle: {
+          navBarButtonColor: Constants.Colors.white,
+          navBarTextColor: Constants.Colors.white,
+          navigationBarColor: Constants.Colors.black,
+          navBarBackgroundColor: Constants.Colors.chatPrimaryAccent,
+          statusBarColor: Constants.Colors.chatDarkAccent,
+          tabFontFamily: "Roboto",
+        },
+        passProps: {
+          slideData: inputData,
+        },
+        overrideBackPress: true,
+      });
+    } else {
+      //If last chat type is opts or text with opts, then replace when user chooses it
+      let replace =
+        this.props.chatStore.chatList &&
+        this.props.chatStore.chatList.length > 0 &&
+        this.props.chatStore.chatList[0].type === "opts" &&
+        (action && action.substring(0, 4)) !== "demo"; //Dont replace Demo Option list
+      chatStore.createUserChat(replace ? true : false, inputData, replace ? 2 : 1);
+      chatStore.contactAiApi(inputData, action);
+
+      // console.log(JSON.stringify(chatStore.chatList));
+    }
   }
 
   _prepareRecordingPath(audioPath) {
@@ -324,21 +382,34 @@ export default class OriginalContainer extends React.Component<Props, State> {
     }
   }
 
+  _renderDateDialog() {
+    return (
+      <DatePickerDialog
+        ref={ref => {
+          this.dateDialog = ref;
+        }}
+        onDatePicked={this.onDatePicked.bind(this)}
+      />
+    );
+  }
+
   render() {
     let chatList = this.props.chatStore.chatList.toJS();
     return (
-      // <View style={{ flex: 1 }}>
-      <ChatPage
-        navigator={this.props.navigator}
-        chatList={chatList}
-        sendPressed={this._receiveUserIp.bind(this)}
-        chatAnimate={this._chatAnimate.bind(this)}
-        startRecording={this._startRecording.bind(this)}
-        stopRecording={this._stopRecording.bind(this)}
-        playSound={this._playSound.bind(this)}
-        stopSound={this._stopSound.bind(this)}
-      />
-      // </View>
+      <View style={{ flex: 1 }}>
+        <ChatPage
+          navigator={this.props.navigator}
+          chatList={chatList}
+          sendPressed={this._receiveUserIp.bind(this)}
+          chatAnimate={this._chatAnimate.bind(this)}
+          startRecording={this._startRecording.bind(this)}
+          stopRecording={this._stopRecording.bind(this)}
+          playSound={this._playSound.bind(this)}
+          stopSound={this._stopSound.bind(this)}
+        />
+
+        {this._renderDateDialog()}
+      </View>
     );
   }
 }
