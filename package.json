@@ -23,7 +23,7 @@
     "mobx": "3.6.1",
     "mobx-persist": "^0.4.1",
     "mobx-react": "4.4.3",
-    "moment": "2.11.2",
+    "moment": "2.29.2",
     "native-base": "^2.3.10",
     "react": "16.2.0",
     "react-native": "^0.55.4",
